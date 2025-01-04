@@ -1,25 +1,4 @@
-/* Animation pour la carte lorsqu'elle est agrandie */
-/* Animation corrigée pour centrer et agrandir la carte */
-@keyframes enlarge {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-  }
 
-  100% {
-    transform: translate(-50%, -50%) scale(1.5);
-    /* Taille augmentée et centrée */
-  }
-}
-
-@keyframes delarge {
-  0% {
-    transform: scale(1.5);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
 
 /* Ajoutez une animation de "secousse" lorsque l'erreur est déclenchée */
 @keyframes shake {
@@ -48,11 +27,7 @@
   animation: shake 0.3s ease;
 }
 
-.card {
-  transform: scale(1);
-  animation: delarge 0.3s ease;
 
-}
 
 .card-title {
   font-size: em;
@@ -64,30 +39,18 @@
   padding: 10px;
 }
 
-.expanded-card {
-  animation: enlarge 0.3s ease;
-  transform: translate(-50%, -50%) scale(1.5);
-  /* Centre la carte et l'agrandit */
-  z-index: 10;
-  /* Assurez-vous que la carte agrandie soit au-dessus des autres */
-  position: fixed;
-  /* Fixer la carte par rapport à la fenêtre */
-  top: 50%;
-  /* Position verticale centrée */
-  left: 50%;
-  /* Position horizontale centrée */
-  width: 50%;
-  /* Ajustez la largeur si nécessaire */
-}
-
 
 .card button {
   width: 100%;
   margin-bottom: 5px;
 }
 
-.expanded-card button {
+
+.modal button {
   width: 100%;
-  /* Ajustez pour éviter un débordement visuel */
   margin-bottom: 5px;
+}
+
+.modal-dialog {
+  /* max-width: 90%; */
 }
