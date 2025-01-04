@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Button, Col, Container, Row } from 'react-bootstrap';
 import PlayerCard from '../components/playerCard/PlayerCard';
 
 const Home = () => {
@@ -21,9 +21,40 @@ const Home = () => {
         );
     };
 
+    const resetScores = () => {
+        // Réinitialiser les scores dans le state local seulement si le score est différent de 0
+
+        if (players.some(player => player.score !== 0)) {
+
+            setPlayers(prevPlayers =>
+                prevPlayers.map(player => ({ ...player, score: 0 }))
+            );
+
+            // Réinitialiser les scores dans le localStorage
+            const resetScores = {};
+            players.forEach(player => {
+                resetScores[player.name] = 0;
+            });
+            localStorage.setItem('scores', JSON.stringify(resetScores));
+
+            console.log("Scores réinitialisés !");
+            window.location.reload();
+        }
+    };
+
+
     return (
-        <Container className="mt-5">
-            <h1 className="text-center mb-4">Score App</h1>
+        <Container className="mt-1">
+            <Row className="mb-4">
+                <Col xs={3}></Col>
+                <Col xs={6}>
+                    <h1 className="text-center mb-4">Score App</h1>
+                </Col>
+                <Col xs={3}>
+                    <Button variant="primary" onClick={() => resetScores()} >Reset</Button>
+                </Col>
+            </Row>
+
             <Row>
 
                 {players.map(player => (
