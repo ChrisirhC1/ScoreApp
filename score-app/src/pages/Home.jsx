@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import PlayerCard from '../components/playerCard/PlayerCard';
-import ModalPlayerCard from '../components/modalPlayerCard/ModalPlayerCard';
 import ModalPlayerSetup from '../components/modalPlayerSetup/ModalPlayerSetup';
 
 const Home = () => {
@@ -9,6 +8,7 @@ const Home = () => {
     const [showPlayerSetup, setShowPlayerSetup] = useState(false);
     const [newPlayerName, setNewPlayerName] = useState('');
 
+    // Charger les scores au démarrage
     useEffect(() => {
         const savedScores = JSON.parse(localStorage.getItem('scores')) || {};
         if (Object.keys(savedScores).length === 0) {
@@ -19,50 +19,56 @@ const Home = () => {
         }
     }, []);
 
-    const handleAddPlayer = () => {
-        if (newPlayerName.trim() === '') return;
-        const newPlayers = [...players, { name: newPlayerName, score: 0 }];
-        setPlayers(newPlayers);
+    // Ajouter un joueur
+    const handleAddPlayer = useCallback(() => {
+        if (!newPlayerName.trim()) return;
+        setPlayers(prev => [...prev, { name: newPlayerName, score: 0 }]);
         setNewPlayerName('');
-    };
+    }, [newPlayerName]);
 
-    const handleModifyPlayer = (index, newName) => {
-        const newPlayers = [...players];
-        newPlayers[index].name = newName;
-        setPlayers(newPlayers); // Mettre à jour l'état des joueurs
-    };
+    // Modifier un joueur
+    const handleModifyPlayer = useCallback((index, newName) => {
+        setPlayers(prev => prev.map((player, i) =>
+            i === index ? { ...player, name: newName } : player
+        ));
+    }, []);
 
+    // Finaliser la configuration des joueurs
     const finishPlayerSetup = () => {
-        const initialScores = {};
-        players.forEach(player => initialScores[player.name] = player.score);
+        const initialScores = players.reduce((acc, player) => {
+            acc[player.name] = player.score;
+            return acc;
+        }, {});
         localStorage.setItem('scores', JSON.stringify(initialScores));
         setShowPlayerSetup(false);
     };
 
+    // Mettre à jour le score d'un joueur
+    const updateScore = useCallback((name, newScore) => {
+        setPlayers(prevPlayers => prevPlayers.map(player =>
+            player.name === name ? { ...player, score: newScore } : player
+        ));
+    }, []);
 
-    const updateScore = (name, newScore) => {
-        setPlayers(prevPlayers =>
-            prevPlayers.map(player =>
-                player.name === name ? { ...player, score: newScore } : player
-            )
-        );
-    };
-
+    // Réinitialiser les scores
     const resetScores = () => {
-        setPlayers(prevPlayers => prevPlayers.map(player => ({ ...player, score: 0 })));
-        localStorage.setItem('scores', JSON.stringify({}));
-        window.location.reload();
+        const updatedPlayers = players.map(player => ({ ...player, score: 0 })); // Réinitialiser les scores
+        setPlayers(updatedPlayers); // Mettre à jour l'état des joueurs
+        const updatedScores = updatedPlayers.reduce((acc, player) => {
+            acc[player.name] = player.score; // Mettre à jour les scores dans le format attendu
+            return acc;
+        }, {});
+        localStorage.setItem('scores', JSON.stringify(updatedScores)); // Sauvegarder les scores mis à jour
+        window.location.reload(); // Rafraîchir la page pour réinitialiser les animations
     };
-
-    const toggleModal = () => setShowPlayerSetup(!showPlayerSetup);
-
+    
 
     return (
         <Container className="mt-1">
             <Row className="mb-4">
                 <Col xs={3}>
-                <Button variant="secondary" onClick={() => setShowPlayerSetup(true)}>⚙</Button>
-                    </Col>
+                    <Button variant="secondary" onClick={() => setShowPlayerSetup(true)}>⚙</Button>
+                </Col>
                 <Col xs={6}>
                     <h1 className="text-center mb-4">Score App</h1>
                 </Col>
@@ -75,7 +81,6 @@ const Home = () => {
                 {players.map(player => (
                     <Col xs={6} sm={6} md={4} lg={4} xl={2} key={player.name}>
                         <PlayerCard
-                            key={player.name}
                             player={player}
                             onScoreChange={updateScore}
                         />
@@ -85,7 +90,6 @@ const Home = () => {
 
             <ModalPlayerSetup
                 show={showPlayerSetup}
-                onHide={toggleModal}
                 setShow={setShowPlayerSetup}
                 newPlayerName={newPlayerName}
                 setNewPlayerName={setNewPlayerName}

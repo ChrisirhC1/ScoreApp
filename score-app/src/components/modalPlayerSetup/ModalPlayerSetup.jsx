@@ -1,33 +1,23 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-const ModalPlayerSetup = ({
-    show,
-    newPlayerName,
-    setNewPlayerName,
-    handleAddPlayer,
-    handleModifyPlayer,
-    finishPlayerSetup,
-    players,
-}) => {
-    const [isEditing, setIsEditing] = useState(false); // Gérer l'état d'édition
-    const [editingPlayerIndex, setEditingPlayerIndex] = useState(null); // Indice du joueur en édition
-    const [editingPlayerName, setEditingPlayerName] = useState(''); // Nom du joueur en édition
+const ModalPlayerSetup = ({ show, setShow, newPlayerName, setNewPlayerName, handleAddPlayer, handleModifyPlayer, finishPlayerSetup, players }) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [editingPlayerIndex, setEditingPlayerIndex] = useState(null);
+    const [editingPlayerName, setEditingPlayerName] = useState('');
 
-    // Activer le mode édition pour un joueur
+    // Activer l'édition pour un joueur
     const startEditing = (index) => {
         setEditingPlayerIndex(index);
-        setEditingPlayerName(players[index].name); // Charger le nom du joueur à modifier
+        setEditingPlayerName(players[index].name);
         setIsEditing(true);
     };
 
-    const handleEditChange = (e) => {
-        setEditingPlayerName(e.target.value); // Mettre à jour le nom du joueur en édition
-    };
+    const handleEditChange = (e) => setEditingPlayerName(e.target.value);
 
     const saveEdit = () => {
-        if (editingPlayerName.trim() !== '') {
-            handleModifyPlayer(editingPlayerIndex, editingPlayerName); // Appeler la fonction de modification avec l'indice et le nom modifié
+        if (editingPlayerName.trim()) {
+            handleModifyPlayer(editingPlayerIndex, editingPlayerName);
             setIsEditing(false);
             setEditingPlayerIndex(null);
         }
@@ -48,36 +38,26 @@ const ModalPlayerSetup = ({
                             onChange={(e) => setNewPlayerName(e.target.value)}
                         />
                     </Form.Group>
-                    <Button variant="success" onClick={handleAddPlayer}>
-                        Ajouter
-                    </Button>
+                    <Button variant="success" onClick={handleAddPlayer}>Ajouter</Button>
                 </Form>
 
-                {!isEditing ? (
-                    <>
-                        <ul className="mt-3">
-                            {players.map((player, index) => (
-                                <li key={index} onClick={() => startEditing(index)}>
-                                    {player?.name} ✏
-                                </li>
-                            ))}
-                        </ul>
-                    </>
-                ) : (
-                    <>
-                        <ul className="mt-3">
-                            <li>
-                                <input
-                                    type="text"
-                                    value={editingPlayerName}
-                                    onChange={handleEditChange}
-                                />
-                            </li>
-                        </ul>
-                        <Button variant="warning" onClick={saveEdit}>
-                            Enregistrer
-                        </Button>
-                    </>
+                <ul className="mt-3">
+                    {players.map((player, index) => (
+                        <li key={player.name} onClick={() => startEditing(index)}>
+                            {player.name} {isEditing && editingPlayerIndex === index ? '✏️' : ''}
+                        </li>
+                    ))}
+                </ul>
+
+                {isEditing && (
+                    <div className="mt-3">
+                        <input
+                            type="text"
+                            value={editingPlayerName}
+                            onChange={handleEditChange}
+                        />
+                        <Button variant="warning" onClick={saveEdit}>Enregistrer</Button>
+                    </div>
                 )}
             </Modal.Body>
             <Modal.Footer>
