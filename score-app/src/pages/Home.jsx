@@ -24,10 +24,10 @@ const Home = () => {
     return (
         <Container className="mt-5">
             <h1 className="text-center mb-4">Score App</h1>
-            <Row xs={6}>
+            <Row>
 
                 {players.map(player => (
-                    <Col xs={6}>
+                    <Col xs={6} sm={6} md={4} lg={4} xl={2} xxl={2} key={player.name}>
                         <PlayerCard
                             key={player.name}
                             player={player}

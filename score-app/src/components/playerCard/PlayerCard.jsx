@@ -38,17 +38,24 @@ const PlayerCard = ({ player, onScoreChange }) => {
     };
 
     return (
-        <div className="col-md-3 mb-4">
+        <div className=" mb-4">
             <Card className={`text-center ${expanded ? 'expanded-card' : ''}`}>
-                <Card.Body>
-                    <Card.Title onClick={toggleCardSize}>
+                <Card.Body className="d-flex flex-column">
+                    <Card.Title onClick={toggleCardSize} >
                         {player.name}
                     </Card.Title>
-                    <Card.Text className={shakeError ? 'shake' : ''}>{score} Points</Card.Text>
+                    <Card.Text className={shakeError ? 'shake' : ''}><strong style={{fontSize:"1.5em"}}>{score}</strong> Points</Card.Text>
                     {!expanded ? (
                         <>
+                        <Row>
+                            <Col xs={12} sm={6}>
                             <Button variant="success" onClick={() => updateScore(1)}>+</Button>
-                            <Button variant="danger" className="ms-2" onClick={() => updateScore(-1)}>-</Button>
+                            </Col>
+                            <Col xs={12} sm={6}>
+                            <Button variant="danger"  onClick={() => updateScore(-1)}>-</Button>
+                            </Col>
+                        </Row>
+                            
                         </>
                     ) : (
                         <>
