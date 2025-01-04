@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, Button, Row, Col, Modal } from 'react-bootstrap';
+import { Card, Button, Row, Col } from 'react-bootstrap';
 import './PlayerCard.css';  // Importez toujours le fichier CSS pour l'animation "shake"
+import ModalPlayerCard from '../modalPlayerCard/ModalPlayerCard';
 
 const PlayerCard = ({ player, onScoreChange }) => {
     const [score, setScore] = useState(() => {
@@ -31,7 +32,6 @@ const PlayerCard = ({ player, onScoreChange }) => {
         onScoreChange(player.name, finalScore);
     }, [score, onScoreChange, player.name]);
 
-    const scoreOptions = [1, 2, 5];
     const toggleModal = () => setShowModal(!showModal);
 
     return (
@@ -58,30 +58,12 @@ const PlayerCard = ({ player, onScoreChange }) => {
                 </Card>
             </div>
 
-            {/* Modal Bootstrap */}
-            <Modal show={showModal} onHide={toggleModal} centered className='modal'>
-                <Modal.Header >
-                    <Modal.Title>{player.name}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p><strong style={{ fontSize: "1.5em" }}>{score}</strong> Points</p>
-                    {scoreOptions.map((value) => (
-                        <Row key={value} className="mb-2">
-                            <Col xs={6}>
-                                <Button variant="success" onClick={() => updateScore(value)}>+{value}</Button>
-                            </Col>
-                            <Col xs={6}>
-                                <Button variant="danger" onClick={() => updateScore(-value)}>-{value}</Button>
-                            </Col>
-                        </Row>
-                    ))}
-                </Modal.Body>
-                {/* <Modal.Footer>
-                    <Button variant="secondary" onClick={toggleModal}>
-                        Fermer
-                    </Button>
-                </Modal.Footer> */}
-            </Modal>
+            {showModal && (
+                <ModalPlayerCard player={player} score={score} updateScore={updateScore} showModal={showModal} onHide={toggleModal}/>
+            )}
+
+            
+
         </>
     );
 };
