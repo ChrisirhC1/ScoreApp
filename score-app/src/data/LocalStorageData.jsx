@@ -25,6 +25,21 @@ export const updateScores = (name, value) => {
     }
 };
 
+
+export const updateScoresToZero = () => {
+    try {
+        const scores = JSON.parse(localStorage.getItem('scores')) || {};
+        Object.keys(scores).forEach((key) => {
+            scores[key] = 0;
+        });
+        localStorage.setItem('scores', JSON.stringify(scores));
+    }
+    catch (error) {
+        console.error('Error updating item in localStorage', error);
+    }
+};
+
+
 export const updateName = (name, newName) => {
     try {
         const scores = JSON.parse(localStorage.getItem('scores')) || {};
@@ -46,4 +61,15 @@ export const deleteLocalStorage = () => {
     }
 };
 
-export default { getScores, setScores, updateScores, updateName, deleteLocalStorage };
+export const getWinner = () => {
+    try {
+        const scores = JSON.parse(localStorage.getItem('scores')) || {};
+        const sortedScores = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+        return sortedScores;
+    } catch (error) {
+        console.error('Error getting winner from localStorage', error);
+        return null;
+    }
+};
+
+export default { getScores, setScores, updateScores, updateScoresToZero, updateName, deleteLocalStorage, getWinner };

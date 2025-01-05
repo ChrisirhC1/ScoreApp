@@ -8,38 +8,22 @@ import { getScores, setScores, updateScores } from '../data/LocalStorageData';
 const Home = () => {
     const [players, setPlayers] = useState([]);
     const [showPlayerSetup, setShowPlayerSetup] = useState(false);
-    const [newPlayerName, setNewPlayerName] = useState('');
 
     useEffect(() => {
+
+
+
         const savedScores = getScores() || {};
         if (Object.keys(savedScores).length === 0) {
             setShowPlayerSetup(true);
         } else {
             const initialPlayers = Object.keys(savedScores).map(name => ({ name, score: savedScores[name] }));
             setPlayers(initialPlayers);
+
+            console.log('initialPlayers', initialPlayers);
         }
+
     }, []);
-
-    const handleAddPlayer = useCallback(() => {
-        if (!newPlayerName.trim()) return;
-        setPlayers(prev => [...prev, { name: newPlayerName, score: 0 }]);
-        setNewPlayerName('');
-    }, [newPlayerName]);
-
-    const handleModifyPlayer = useCallback((index, newName) => {
-        setPlayers(prev => prev.map((player, i) =>
-            i === index ? { ...player, name: newName } : player
-        ));
-    }, []);
-
-    const finishPlayerSetup = () => {
-        const initialScores = players.reduce((acc, player) => {
-            acc[player.name] = player.score;
-            return acc;
-        }, {});
-        setScores(initialScores);
-        setShowPlayerSetup(false);
-    };
 
     const updateScore = useCallback((name, newScore) => {
         setPlayers(prevPlayers => prevPlayers.map(player =>
@@ -87,15 +71,12 @@ const Home = () => {
             <ModalPlayerSetup
                 show={showPlayerSetup}
                 setShow={setShowPlayerSetup}
-                newPlayerName={newPlayerName}
-                setNewPlayerName={setNewPlayerName}
-                handleAddPlayer={handleAddPlayer}
-                handleModifyPlayer={handleModifyPlayer}
-                finishPlayerSetup={finishPlayerSetup}
                 players={players}
+                setPlayers={setPlayers}
             />
 
             <Footer />
+
         </Container>
     );
 }

@@ -1,12 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import { setScores } from '../../data/LocalStorageData';
 
-const ModalPlayerSetup = ({ show, setShow, newPlayerName, setNewPlayerName, handleAddPlayer, handleModifyPlayer, finishPlayerSetup, players }) => {
+const ModalPlayerSetup = ({ show, setShow, players, setPlayers }) => {
+    const [newPlayerName, setNewPlayerName] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const [editingPlayerIndex, setEditingPlayerIndex] = useState(null);
     const [editingPlayerName, setEditingPlayerName] = useState('');
 
-    // Activer l'édition pour un joueur
+    const handleAddPlayer = useCallback(() => {
+        if (!newPlayerName.trim()) return;
+        setPlayers(prev => [...prev, { name: newPlayerName, score: 0 }]);
+        setNewPlayerName('');
+    }, [newPlayerName, setPlayers]);
+
+    const handleModifyPlayer = useCallback((index, newName) => {
+        setPlayers(prev => prev.map((player, i) =>
+            i === index ? { ...player, name: newName } : player
+        ));
+    }, [setPlayers]);
+
+    const finishPlayerSetup = () => {
+        const initialScores = players.reduce((acc, player) => {
+            acc[player.name] = player.score;
+            return acc;
+        }, {});
+        setScores(initialScores);
+        setShow(false);
+    };
+
     const startEditing = (index) => {
         setEditingPlayerIndex(index);
         setEditingPlayerName(players[index].name);
