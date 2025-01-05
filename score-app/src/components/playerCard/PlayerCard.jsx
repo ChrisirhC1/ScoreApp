@@ -1,21 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Button, Row, Col } from 'react-bootstrap';
-import './PlayerCard.css';  // Importez toujours le fichier CSS pour l'animation "shake"
+import './PlayerCard.css';
 import ModalPlayerCard from '../modalPlayerCard/ModalPlayerCard';
+import { getScores, updateScores } from '../../data/LocalStorageData';
 
 const PlayerCard = ({ player, onScoreChange }) => {
     const [score, setScore] = useState(() => {
-        // Initialisation du score depuis le localStorage ou 0 si non trouvé
-        const savedScores = JSON.parse(localStorage.getItem('scores')) || {};
+        const savedScores = getScores() || {};
         return savedScores[player.name] ?? 0;
     });
     const [showModal, setShowModal] = useState(false);
     const [shakeError, setShakeError] = useState(false);
 
     useEffect(() => {
-        const scores = JSON.parse(localStorage.getItem('scores')) || {};
-        scores[player.name] = score;
-        localStorage.setItem('scores', JSON.stringify(scores));
+        updateScores(player.name, score);
     }, [score, player.name]);
 
     const updateScore = useCallback((delta) => {
@@ -36,7 +34,6 @@ const PlayerCard = ({ player, onScoreChange }) => {
 
     return (
         <>
-            {/* Carte principale */}
             <div className="mb-4">
                 <Card className="text-center">
                     <Card.Body className="d-flex flex-column">
@@ -61,9 +58,6 @@ const PlayerCard = ({ player, onScoreChange }) => {
             {showModal && (
                 <ModalPlayerCard player={player} score={score} updateScore={updateScore} showModal={showModal} onHide={toggleModal}/>
             )}
-
-            
-
         </>
     );
 };

@@ -3,15 +3,15 @@ import { Button, Col, Container, Row } from 'react-bootstrap';
 import PlayerCard from '../components/playerCard/PlayerCard';
 import ModalPlayerSetup from '../components/modalPlayerSetup/ModalPlayerSetup';
 import Footer from '../components/footer/Footer';
+import { getScores, setScores, updateScores } from '../data/LocalStorageData';
 
 const Home = () => {
     const [players, setPlayers] = useState([]);
     const [showPlayerSetup, setShowPlayerSetup] = useState(false);
     const [newPlayerName, setNewPlayerName] = useState('');
 
-    // Charger les scores au démarrage
     useEffect(() => {
-        const savedScores = JSON.parse(localStorage.getItem('scores')) || {};
+        const savedScores = getScores() || {};
         if (Object.keys(savedScores).length === 0) {
             setShowPlayerSetup(true);
         } else {
@@ -20,49 +20,44 @@ const Home = () => {
         }
     }, []);
 
-    // Ajouter un joueur
     const handleAddPlayer = useCallback(() => {
         if (!newPlayerName.trim()) return;
         setPlayers(prev => [...prev, { name: newPlayerName, score: 0 }]);
         setNewPlayerName('');
     }, [newPlayerName]);
 
-    // Modifier un joueur
     const handleModifyPlayer = useCallback((index, newName) => {
         setPlayers(prev => prev.map((player, i) =>
             i === index ? { ...player, name: newName } : player
         ));
     }, []);
 
-    // Finaliser la configuration des joueurs
     const finishPlayerSetup = () => {
         const initialScores = players.reduce((acc, player) => {
             acc[player.name] = player.score;
             return acc;
         }, {});
-        localStorage.setItem('scores', JSON.stringify(initialScores));
+        setScores(initialScores);
         setShowPlayerSetup(false);
     };
 
-    // Mettre à jour le score d'un joueur
     const updateScore = useCallback((name, newScore) => {
         setPlayers(prevPlayers => prevPlayers.map(player =>
             player.name === name ? { ...player, score: newScore } : player
         ));
+        updateScores(name, newScore);
     }, []);
 
-    // Réinitialiser les scores
     const resetScores = () => {
-        const updatedPlayers = players.map(player => ({ ...player, score: 0 })); // Réinitialiser les scores
-        setPlayers(updatedPlayers); // Mettre à jour l'état des joueurs
+        const updatedPlayers = players.map(player => ({ ...player, score: 0 }));
+        setPlayers(updatedPlayers);
         const updatedScores = updatedPlayers.reduce((acc, player) => {
-            acc[player.name] = player.score; // Mettre à jour les scores dans le format attendu
+            acc[player.name] = player.score;
             return acc;
         }, {});
-        localStorage.setItem('scores', JSON.stringify(updatedScores)); // Sauvegarder les scores mis à jour
-        window.location.reload(); // Rafraîchir la page pour réinitialiser les animations
+        setScores(updatedScores);
+        window.location.reload();
     };
-    
 
     return (
         <Container className="mt-1">
@@ -100,9 +95,7 @@ const Home = () => {
                 players={players}
             />
 
-
             <Footer />
-
         </Container>
     );
 }

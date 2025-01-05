@@ -1,18 +1,15 @@
-// /C:/Users/chris/Documents/Projets/ScoreApp/ScoreApp/score-app/src/data/LocalStorageData.jsx
-
 export const getScores = () => {
     try {
-        
-        return;
+        return JSON.parse(localStorage.getItem('scores')) || {};
     } catch (error) {
         console.error('Error getting item from localStorage', error);
         return null;
     }
 };
 
-export const setScores = (name, value) => {
+export const setScores = (scores) => {
     try {
-        return;
+        localStorage.setItem('scores', JSON.stringify(scores));
     } catch (error) {
         console.error('Error setting item in localStorage', error);
     }
@@ -20,31 +17,33 @@ export const setScores = (name, value) => {
 
 export const updateScores = (name, value) => {
     try {
-        
-        return
-
+        const scores = JSON.parse(localStorage.getItem('scores')) || {};
+        scores[name] = value;
+        localStorage.setItem('scores', JSON.stringify(scores));
     } catch (error) {
         console.error('Error updating item in localStorage', error);
     }
 };
 
-export const updatename = (name, newName) => {
+export const updateName = (name, newName) => {
     try {
-        return
+        const scores = JSON.parse(localStorage.getItem('scores')) || {};
+        if (scores[name] !== undefined) {
+            scores[newName] = scores[name];
+            delete scores[name];
+            localStorage.setItem('scores', JSON.stringify(scores));
+        }
+    } catch (error) {
+        console.error('Error updating item in localStorage', error);
+    }
+};
+
+export const deleteLocalStorage = () => {
+    try {
+        localStorage.removeItem('scores');
     } catch (error) {
         console.error('Error deleting item from localStorage', error);
     }
 };
 
-export const deletelcoalStorage = () => {
-    try {
-        
-        return
-
-    } catch (error) {
-        console.error('Error deleting item from localStorage', error);
-    }
-};
-
-
-export default { getScores, setScores, updateScores, updatename, deletelcoalStorage };
+export default { getScores, setScores, updateScores, updateName, deleteLocalStorage };
