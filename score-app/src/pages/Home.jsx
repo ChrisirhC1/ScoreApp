@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import PlayerCard from '../components/playerCard/PlayerCard';
 import ModalPlayerSetup from '../components/modalPlayerSetup/ModalPlayerSetup';
+import Footer from '../components/footer/Footer';
 
 const Home = () => {
     const [players, setPlayers] = useState([]);
@@ -98,6 +99,10 @@ const Home = () => {
                 finishPlayerSetup={finishPlayerSetup}
                 players={players}
             />
+
+
+            <Footer />
+
         </Container>
     );
 }
