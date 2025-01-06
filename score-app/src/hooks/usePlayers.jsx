@@ -55,6 +55,30 @@ const usePlayers = () => {
         localStorage.removeItem('players');
     };
 
+
+
+
+    /* MODIFICATIONS DES POINTS */
+
+
+    // Ajouter des points à un joueur
+    const addPoints = (index, points) => {
+        const updatedPlayers = [...players];
+        const playerName = Object.keys(updatedPlayers[index])[0];
+        const score = Object.values(updatedPlayers[index])[0];
+        updatedPlayers[index] = { [playerName]: score + points };
+        setPlayers(updatedPlayers);
+    };
+
+    // Retirer des points à un joueur
+    const removePoints = (index, points) => {
+        const updatedPlayers = [...players];
+        const playerName = Object.keys(updatedPlayers[index])[0];
+        const score = Object.values(updatedPlayers[index])[0];
+        updatedPlayers[index] = { [playerName]: score - points };
+        setPlayers(updatedPlayers);
+    };
+
     return {
         players,
         addPlayer,
@@ -62,7 +86,9 @@ const usePlayers = () => {
         removePlayer,
         resetScores,
         savePlayers,
-        clearPlayers
+        clearPlayers,
+        addPoints,
+        removePoints,
     };
 };
 
