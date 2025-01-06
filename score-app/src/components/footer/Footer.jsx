@@ -1,13 +1,21 @@
 
-import { Button } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
 import './footer.css';
 
 const Footer = () => {
-   
+
 
     return (
         <>
-           <Button variant="primary" className="footer">Click me</Button>
+            <Row className="text-center footer">
+                <Col xs={12}>
+
+
+                    <Button variant="success" size='lg'>classement</Button>
+
+
+                </Col>
+            </Row>
         </>
     );
 };

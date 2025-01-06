@@ -5,7 +5,7 @@ import Footer from '../components/footer/Footer';
 
 const Home = () => {
     return (
-        <Container fluid className="d-flex flex-column min-vh-100">
+        <Container fluid className="d-flex flex-column min-vh-100 p-3">
             <Row>
                 <Col>
                     <Header />
