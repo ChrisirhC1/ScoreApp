@@ -1,15 +1,27 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
+import Header from '../components/header/Header';
+import Footer from '../components/footer/Footer';
 
 const Home = () => {
-
-
-
     return (
-        <>
-
-        <h1>Score</h1>
-        </>
-
+        <Container fluid className="d-flex flex-column min-vh-100">
+            <Row>
+                <Col>
+                    <Header />
+                </Col>
+            </Row>
+            <Row className="flex-grow-1">
+                <Col>
+                    {/* Contenu principal ici */}
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <Footer />
+                </Col>
+            </Row>
+        </Container>
     );
 }
 

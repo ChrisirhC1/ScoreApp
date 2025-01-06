@@ -1,4 +1,5 @@
 
+import { Button } from 'react-bootstrap';
 import './footer.css';
 
 const Footer = () => {
@@ -6,7 +7,7 @@ const Footer = () => {
 
     return (
         <>
-           
+           <Button variant="primary" className="footer">Click me</Button>
         </>
     );
 };
