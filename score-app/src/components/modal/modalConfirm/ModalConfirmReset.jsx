@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 // import usePlayers from '../../../hooks/usePlayers';
 
 import { usePlayers } from '../../../context/PlayerContext';
 
 const ModalConfirmReset = ({ show, setShow }) => {
 
-    const {resetScores, clearPlayers} = usePlayers();
+    const { resetScores, clearPlayers } = usePlayers();
     const [NoMessage, setNoMessage] = useState(1);
     const [resetScoresMessage] = useState({
         title: 'Réinitialisation',
@@ -36,7 +36,7 @@ const ModalConfirmReset = ({ show, setShow }) => {
                 {resetScoresMessage.message}
             </Modal.Body>
             <Modal.Footer>
-                
+
                 <Button variant="secondary" onClick={() => handleClose()} hidden={NoMessage === 2}>
                     Annuler
                 </Button>
@@ -55,10 +55,17 @@ const ModalConfirmReset = ({ show, setShow }) => {
                         {deletePlayerMessage.message}
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="danger" onClick={() => {handleClose(), clearPlayers()}}>
-                            Non
+
+                        <Button variant="danger" onClick={() => { handleClose(), clearPlayers() }} >
+                            <OverlayTrigger
+                                placement="top"  
+                                overlay={<Tooltip id="tooltip-non">{"(Libère la mémoire)"}</Tooltip>}
+                            >
+                                <span>Non</span>
+                            </OverlayTrigger>
                         </Button>
-                        <Button variant="success" onClick={() => { handleClose(), resetScores()}}>
+
+                        <Button variant="success" onClick={() => { handleClose(), resetScores() }}>
                             Oui
                         </Button>
                     </Modal.Footer>

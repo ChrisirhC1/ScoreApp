@@ -31,6 +31,10 @@ export const PlayerProvider = ({ children }) => {
         }
     };
 
+    const getPlayers = () => {
+        return players;
+    }
+
     const removePlayer = (index) => {
         const updatedPlayers = players.filter((_, i) => i !== index);
         setPlayers(updatedPlayers);
@@ -59,7 +63,7 @@ export const PlayerProvider = ({ children }) => {
     };
 
     return (
-        <PlayerContext.Provider value={{ players, addPlayer, editPlayer, removePlayer, resetScores, clearPlayers }}>
+        <PlayerContext.Provider value={{ players, addPlayer, editPlayer, getPlayers, removePlayer, resetScores, clearPlayers }}>
             {children}
         </PlayerContext.Provider>
     );

@@ -14,7 +14,7 @@ const Header = () => {
             <Row className="text-center">
                 <Col xs={12} className="d-flex justify-content-between">
                     <h2>Score App</h2>
-                    <Button variant="primary" onClick={() => setShowParams(!showParams)}>⚙</Button>
+                    <Button variant="light" onClick={() => setShowParams(!showParams)}>⚙</Button>
                 </Col>
             </Row>
 
@@ -23,10 +23,10 @@ const Header = () => {
                 <div>
                     <Row className="header-buttons mt-3">
                         <Col xs={6}>
-                            <Button variant="info" onClick={() => setShowPlayerSetup(true)}><strong>Joueurs</strong></Button>
+                            <Button variant="info" onClick={() => setShowPlayerSetup(true)}>Joueurs</Button>
                         </Col>
                         <Col xs={6}>
-                            <Button variant="danger" onClick={() => setShowConfirmReset(true)}><strong> Reset</strong></Button>
+                            <Button variant="danger" onClick={() => setShowConfirmReset(true)}> Reset</Button>
                         </Col>
                     </Row>
                 </div>
