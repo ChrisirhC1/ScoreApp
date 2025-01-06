@@ -63,6 +63,8 @@ const usePlayers = () => {
 
     // Ajouter des points à un joueur
     const addPoints = (index, points) => {
+        console.log('Adding points', index, points);
+
         const updatedPlayers = [...players];
         const playerName = Object.keys(updatedPlayers[index])[0];
         const score = Object.values(updatedPlayers[index])[0];
