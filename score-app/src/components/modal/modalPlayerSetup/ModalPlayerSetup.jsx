@@ -6,7 +6,7 @@ import { usePlayers } from '../../../context/PlayerContext';
 const ModalPlayerSetup = ({ show, setShow }) => {
     const [currentPlayer, setCurrentPlayer] = useState('');
     const [isEditing, setIsEditing] = useState(null); // Gestion de l'édition
-    const { players, addPlayer, editPlayer, removePlayer, savePlayers } = usePlayers();
+    const { players, addPlayer, editPlayer, removePlayer } = usePlayers();
 
     // Ajout ou modification d'un joueur
     const handleSubmit = (e) => {
@@ -20,11 +20,7 @@ const ModalPlayerSetup = ({ show, setShow }) => {
         setCurrentPlayer('');
     };
 
-    // Enregistrement des joueurs dans le localStorage
-    const handleSave = () => {
-        // savePlayers();
-        setShow(false);
-    };
+  
 
     // Passer en mode édition
     const handleEditClick = (index) => {
@@ -66,6 +62,7 @@ const ModalPlayerSetup = ({ show, setShow }) => {
                                     size="sm"
                                     className="me-2"
                                     onClick={() => handleEditClick(index)}
+                                    disabled={isEditing !== null}
                                 >
                                     Modifier
                                 </Button>

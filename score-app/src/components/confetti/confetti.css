@@ -1,0 +1,47 @@
+.confetti {
+    opacity: 1;
+    animation-duration: 1s;
+    /* Durée de l'animation (par exemple 3 secondes) */
+    animation-timing-function: ease-out;
+    /* Fonction de timing pour une animation fluide */
+    animation-fill-mode: forwards;
+    /* Assure que les styles restent après l'animation */
+}
+
+/* Animation pour l'entrée des confettis (arrivée) */
+@keyframes enter {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+        /* Départ en haut */
+    }
+
+    100% {
+        opacity: 1;
+        /* transform: translateY(0); */
+        /* Atteindre la position finale */
+    }
+}
+
+/* Animation pour la sortie des confettis (repartir) */
+@keyframes exit {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        /* transform: translateY(50px); */
+        /* Départ vers le bas */
+    }
+}
+
+/* Appliquer les animations */
+.confetti.enter {
+    animation-name: enter;
+}
+
+.confetti.exit {
+    animation-name: exit;
+}

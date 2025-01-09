@@ -19,7 +19,8 @@ const ModalMoreScore = ({ showMoreScore, setShowMoreScore, playerName, playerSco
                 <Modal.Title>{playerName}</Modal.Title>
             </Modal.Header>
             <Modal.Body className="text-center">
-                <p>Score : {playerScore}</p>
+                <h1>{playerScore}</h1>
+                <p>Points</p>
                 {scoreOptions.map((value) => (
                     <Row className="justify-content-center mb-2 btn-moreScore" key={index}>
                         <Col xs="6">

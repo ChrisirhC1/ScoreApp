@@ -13,8 +13,14 @@ export const PlayerProvider = ({ children }) => {
         }
     }, []);
 
+    // méthodes pour mettre une majuscule sur la premiere lettre du nom
+    const capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
     const addPlayer = (playerName) => {
         if (playerName.trim()) {
+            playerName = capitalizeFirstLetter(playerName);
             const updatedPlayers = [...players, { [playerName]: 0 }];
             setPlayers(updatedPlayers);
             localStorage.setItem('players', JSON.stringify(updatedPlayers));
@@ -24,6 +30,7 @@ export const PlayerProvider = ({ children }) => {
 
     const editPlayer = (index, newName) => {
         if (newName.trim()) {
+            newName = capitalizeFirstLetter(newName);
             const updatedPlayers = [...players];
             const score = Object.values(updatedPlayers[index])[0];
             updatedPlayers[index] = { [newName]: score };
