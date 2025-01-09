@@ -23,7 +23,7 @@ const PlayerCard = ({ playerData, index }) => {
             <div className="player-card mb-4 ">
                 <Card className="text-center">
                     <Card.Body className="d-flex flex-column">
-                        <Card.Title onClick={() => {console.log("tt") ,setShowMoreScore(true)}} >
+                        <Card.Title onClick={() => setShowMoreScore(true)} >
                             {playerName}
                         </Card.Title>
                         <Card.Text >
@@ -42,7 +42,6 @@ const PlayerCard = ({ playerData, index }) => {
             </div>
 
             <ModalMoreScore showMoreScore={showMoreScore} setShowMoreScore={setShowMoreScore} playerName={playerName} playerScore={playerScore} updateScore={updateScore} index={index} />
-
         </>
     );
 };
