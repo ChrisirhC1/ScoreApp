@@ -10,10 +10,12 @@ const Home = () => {
 
     const { players } = usePlayers();
 
+
     
 
+
     return (
-        <Container fluid className="d-flex flex-column min-vh-100 p-3">
+        <Container fluid className="d-flex flex-column p-3 container">
             <Row>
                 <Col>
                     <Header />
