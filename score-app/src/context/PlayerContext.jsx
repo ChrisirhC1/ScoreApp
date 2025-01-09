@@ -31,23 +31,26 @@ export const PlayerProvider = ({ children }) => {
     const addPlayer = (playerName) => {
         if (playerName.trim()) {
             playerName = capitalizeFirstLetter(playerName);
-            const updatedPlayers = [...players, { [playerName]: 0 }];
+            const updatedPlayers = [...players, { name: playerName, score: 0 }];
             setPlayers(updatedPlayers);
             localStorage.setItem('players', JSON.stringify(updatedPlayers));
         }
-
     };
+    
 
     const editPlayer = (index, newName) => {
         if (newName.trim()) {
             newName = capitalizeFirstLetter(newName);
             const updatedPlayers = [...players];
-            const score = Object.values(updatedPlayers[index])[0];
-            updatedPlayers[index] = { [newName]: score };
+            updatedPlayers[index] = {
+                ...updatedPlayers[index], 
+                name: newName 
+            };
             setPlayers(updatedPlayers);
             localStorage.setItem('players', JSON.stringify(updatedPlayers));
         }
     };
+    
 
     const getPlayers = () => {
         return players;
@@ -64,19 +67,18 @@ export const PlayerProvider = ({ children }) => {
 
     const addPoints = (index, points) => {
         const updatedPlayers = [...players];
-        const score = Object.values(updatedPlayers[index])[0];
-        updatedPlayers[index] = { [Object.keys(updatedPlayers[index])[0]]: score + points };
+        updatedPlayers[index].score += points;
         setPlayers(updatedPlayers);
         localStorage.setItem('players', JSON.stringify(updatedPlayers));
-    }
-
+    };
+    
     const removePoints = (index, points) => {
         const updatedPlayers = [...players];
-        const score = Object.values(updatedPlayers[index])[0];
-        updatedPlayers[index] = { [Object.keys(updatedPlayers[index])[0]]: score - points };
+        updatedPlayers[index].score -= points;
         setPlayers(updatedPlayers);
         localStorage.setItem('players', JSON.stringify(updatedPlayers));
-    }
+    };
+    
 
     const resetScores = () => {
         const updatedPlayers = players.map(player => {

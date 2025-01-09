@@ -11,7 +11,7 @@ const Home = () => {
     const { players } = usePlayers();
 
 
-    
+
 
 
     return (
@@ -29,6 +29,7 @@ const Home = () => {
                                 <PlayerCard playerData={player} index={index} />
                             </Col>
                         ))}
+
                     </Row>
                 </div>
 

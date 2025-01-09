@@ -8,8 +8,8 @@ import ModalMoreScore from '../modal/modalMoreScore/ModalMoreScore';
 const PlayerCard = ({ playerData, index }) => {
 
     const { addPoints, removePoints, getAllowNegativeScores } = usePlayers();
-    const playerName = Object.keys(playerData)[0];
-    const playerScore = Object.values(playerData)[0];
+    const playerName = playerData.name;
+    const playerScore = playerData.score;
     const [totalScorePlus, setTotalScorePlus] = useState(0);
     const [showTotalScorePlus, setShowTotalScorePlus] = useState(false);
 
@@ -20,7 +20,7 @@ const PlayerCard = ({ playerData, index }) => {
 
     const updateScore = async (value) => {
         if (getAllowNegativeScores() === false && playerScore + value < 0) {
-            
+
             removePoints(index, playerScore)
             return false;
         }
@@ -59,7 +59,12 @@ const PlayerCard = ({ playerData, index }) => {
                                 <Col xs={3} className='d-flex justify-content-start align-items-center'>
                                     {showTotalScorePlus && (
                                         <>
-                                            <strong>{totalScorePlus > 0 ? <p className="text-success">+{totalScorePlus}</p> : totalScorePlus < 0 ? <p className="text-danger">{totalScorePlus}</p> : null}</strong>
+                                            {/* Utiliser un <span> pour éviter l'erreur de validation du DOM */}
+                                            {totalScorePlus > 0 ? (
+                                                <p className="text-success"><span><strong>+{totalScorePlus}</strong></span></p>
+                                            ) : totalScorePlus < 0 ? (
+                                                <p className="text-danger"><span><strong>{totalScorePlus}</strong></span></p>
+                                            ) : null}
                                         </>
                                     )}
                                 </Col>

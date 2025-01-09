@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form, ListGroup } from 'react-bootstrap';
-// import usePlayers from '../../../hooks/usePlayers';
 import { usePlayers } from '../../../context/PlayerContext';
 
 const ModalPlayerSetup = ({ show, setShow }) => {
@@ -20,12 +19,9 @@ const ModalPlayerSetup = ({ show, setShow }) => {
         setCurrentPlayer('');
     };
 
-  
-
     // Passer en mode édition
     const handleEditClick = (index) => {
-        const playerName = Object.keys(players[index])[0];
-        setCurrentPlayer(playerName);
+        setCurrentPlayer(players[index].name);
         setIsEditing(index);
     };
 
@@ -55,7 +51,7 @@ const ModalPlayerSetup = ({ show, setShow }) => {
                 <ListGroup className="mt-3">
                     {players.map((player, index) => (
                         <ListGroup.Item key={index} className="d-flex justify-content-between align-items-center">
-                            {Object.keys(player)[0]}
+                            {player.name}
                             <div>
                                 <Button
                                     variant="warning"
@@ -81,9 +77,6 @@ const ModalPlayerSetup = ({ show, setShow }) => {
             </Modal.Body>
 
             <Modal.Footer>
-                {/* <Button variant="success" onClick={handleSave} disabled={players.length === 0}>
-                    Enregistrer
-                </Button> */}
                 <Button variant="secondary" onClick={() => setShow(false)}>
                     Fermer
                 </Button>
