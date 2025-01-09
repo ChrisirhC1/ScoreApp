@@ -2,20 +2,18 @@ import { Button, Col, Modal, Row } from "react-bootstrap";
 import './modalMoreScore.css';
 import { useState } from "react";
 
-const ModalMoreScore = ({ showMoreScore, setShowMoreScore, playerName, playerScore, updateScore, index }) => {
+const ModalMoreScore = ({ showMoreScore, setShowMoreScore, playerName, playerScore, updateScore, totalScorePlus, setTotalScorePlus, index }) => {
 
     const handleClose = () => {
         
         setShowMoreScore(false);
         setTotalScorePlus(0);
     };
-    const [totalScorePlus, setTotalScorePlus] = useState(0);
 
-    const updateScoreLocal = (value) => {
-        console.log(`Update score by: ${value}`);
+    const updateScoreLocal = async (value) => {
+        // console.log(`Update score by: ${value}`);
         // Appeler ici la fonction de mise à jour du score si nécessaire
-        setTotalScorePlus(totalScorePlus + value);
-        updateScore(value);
+        await updateScore(value) ? setTotalScorePlus(totalScorePlus + value ) : null;
     };
 
     const scoreOptions = [1, 2, 5];

@@ -5,6 +5,7 @@ const PlayerContext = createContext();
 
 export const PlayerProvider = ({ children }) => {
     const [players, setPlayers] = useState([]);
+    const [isNegativeScore, setIsNegativeScore] = useState(false);
 
     useEffect(() => {
         const storedPlayers = localStorage.getItem('players');
@@ -17,6 +18,15 @@ export const PlayerProvider = ({ children }) => {
     const capitalizeFirstLetter = (string) => {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
+
+    const allowNegativeScores = (bool) => {
+        setIsNegativeScore(bool);
+    }
+
+    const getAllowNegativeScores = () => {
+        return isNegativeScore;
+    }
+
 
     const addPlayer = (playerName) => {
         if (playerName.trim()) {
@@ -87,7 +97,7 @@ export const PlayerProvider = ({ children }) => {
     };
 
     return (
-        <PlayerContext.Provider value={{ players, addPlayer, editPlayer, getPlayers, removePlayer, addPoints, removePoints, resetScores, clearPlayers }}>
+        <PlayerContext.Provider value={{ players, allowNegativeScores, getAllowNegativeScores, addPlayer, editPlayer, getPlayers, removePlayer, addPoints, removePoints, resetScores, clearPlayers }}>
             {children}
         </PlayerContext.Provider>
     );
