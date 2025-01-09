@@ -2,37 +2,32 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './PlayerCard.css';
 import { Button, Card, Col, Container, Row } from 'react-bootstrap';
 import { usePlayers } from '../../context/PlayerContext';
+import ModalMoreScore from '../modal/modalMoreScore/ModalMoreScore';
 
 
 const PlayerCard = ({ playerData, index }) => {
 
     const { addPoints, removePoints } = usePlayers();
+    const playerName = Object.keys(playerData)[0];
+    const playerScore = Object.values(playerData)[0];
 
-    const [player, setPlayer] = useState({
-        name: Object.keys(playerData)[0],
-        score: Object.values(playerData)[0]
-    });
+    const [showMoreScore, setShowMoreScore] = useState(false);
 
-    const updateScore = useCallback((value) => {
-        console.log('Updating score for player', index, value);
 
-        if (value > 0) {
-            addPoints(index, value);
-        } else {
-            removePoints(index, Math.abs(value));
-        }
-    }, [addPoints, removePoints, index]);
-   
+    const updateScore = (value) => {
+        value > 0 ? addPoints(index, value) : removePoints(index, Math.abs(value));
+    }
+
     return (
         <>
-         <div className="player-card mb-4 ">
+            <div className="player-card mb-4 ">
                 <Card className="text-center">
                     <Card.Body className="d-flex flex-column">
-                        <Card.Title >
-                            {player.name}
+                        <Card.Title onClick={() => {console.log("tt") ,setShowMoreScore(true)}} >
+                            {playerName}
                         </Card.Title>
                         <Card.Text >
-                            <strong style={{ fontSize: "1.5em" }}>{player.score}</strong> Points
+                            <strong style={{ fontSize: "1.5em" }}>{playerScore}</strong> Points
                         </Card.Text>
                         <Row>
                             <Col xs={6} sm={6}>
@@ -45,7 +40,9 @@ const PlayerCard = ({ playerData, index }) => {
                     </Card.Body>
                 </Card>
             </div>
-           
+
+            <ModalMoreScore showMoreScore={showMoreScore} setShowMoreScore={setShowMoreScore} playerName={playerName} playerScore={playerScore} updateScore={updateScore} index={index} />
+
         </>
     );
 };

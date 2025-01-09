@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
@@ -9,6 +9,9 @@ import PlayerCard from '../components/playerCard/PlayerCard';
 const Home = () => {
 
     const { players } = usePlayers();
+
+    
+
     return (
         <Container fluid className="d-flex flex-column min-vh-100 p-3">
             <Row>

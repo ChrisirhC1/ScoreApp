@@ -19,6 +19,7 @@ export const PlayerProvider = ({ children }) => {
             setPlayers(updatedPlayers);
             localStorage.setItem('players', JSON.stringify(updatedPlayers));
         }
+
     };
 
     const editPlayer = (index, newName) => {
@@ -44,6 +45,22 @@ export const PlayerProvider = ({ children }) => {
         }
     };
 
+    const addPoints = (index, points) => {
+        const updatedPlayers = [...players];
+        const score = Object.values(updatedPlayers[index])[0];
+        updatedPlayers[index] = { [Object.keys(updatedPlayers[index])[0]]: score + points };
+        setPlayers(updatedPlayers);
+        localStorage.setItem('players', JSON.stringify(updatedPlayers));
+    }
+
+    const removePoints = (index, points) => {
+        const updatedPlayers = [...players];
+        const score = Object.values(updatedPlayers[index])[0];
+        updatedPlayers[index] = { [Object.keys(updatedPlayers[index])[0]]: score - points };
+        setPlayers(updatedPlayers);
+        localStorage.setItem('players', JSON.stringify(updatedPlayers));
+    }
+
     const resetScores = () => {
         const updatedPlayers = players.map(player => {
             const playerName = Object.keys(player)[0];
@@ -63,7 +80,7 @@ export const PlayerProvider = ({ children }) => {
     };
 
     return (
-        <PlayerContext.Provider value={{ players, addPlayer, editPlayer, getPlayers, removePlayer, resetScores, clearPlayers }}>
+        <PlayerContext.Provider value={{ players, addPlayer, editPlayer, getPlayers, removePlayer, addPoints, removePoints, resetScores, clearPlayers }}>
             {children}
         </PlayerContext.Provider>
     );
