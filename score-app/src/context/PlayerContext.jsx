@@ -82,9 +82,9 @@ export const PlayerProvider = ({ children }) => {
 
     const resetScores = () => {
         const updatedPlayers = players.map(player => {
-            const playerName = Object.keys(player)[0];
-            return { [playerName]: 0 };
+            return { name: player.name, score: 0 };
         });
+        
         if (updatedPlayers.length === 0) {
             localStorage.removeItem('players');
         } else {
