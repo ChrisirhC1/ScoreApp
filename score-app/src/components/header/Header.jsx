@@ -1,13 +1,18 @@
 import { Button, Col, Row, Collapse } from "react-bootstrap";
 import './header.css';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { usePlayers } from "../../context/PlayerContext"
 import ModalPlayerSetup from "../modal/modalPlayerSetup/ModalPlayerSetup";
 import ModalConfirmReset from "../modal/modalConfirm/ModalConfirmReset";
 import Confetti from "../confetti/Confetti";
 import ModalOptions from "../modal/modalOptions/ModalOptions";
 
 const Header = () => {
+
+    const { getPlayers } = usePlayers();
+
     const [showPlayerSetup, setShowPlayerSetup] = useState(false);
+    const [txtBtnPlayers, setTxtBtnPlayers] = useState("Nouvelle partie");
     const [showParams, setShowParams] = useState(false);
     const [showConfirmReset, setShowConfirmReset] = useState(false);
     const [showOptions, setShowOptions] = useState(false);
@@ -16,6 +21,12 @@ const Header = () => {
     const handleEasterEgg = () => {
         setShowEasterEgg(!showEasterEgg);
     };
+
+    useEffect(() => {
+        getPlayers().length > 0 ? setTxtBtnPlayers("Joueurs") : setTxtBtnPlayers("Nouvelle partie");
+    }, [getPlayers]);
+    
+
 
     return (
         <div className="header">
@@ -31,7 +42,7 @@ const Header = () => {
                             </span>
                         )}
                     </div>
-                    <Button variant="light" onClick={() => setShowParams(!showParams)}>⚙</Button>
+                    <Button variant="light" onClick={() => setShowParams(!showParams)}>➕</Button>
                 </Col>
             </Row>
 
@@ -40,7 +51,7 @@ const Header = () => {
                 <div>
                     <Row className="header-buttons mt-3">
                         <Col xs={6}>
-                            <Button variant="info" onClick={() => setShowPlayerSetup(true)} style={{ width: "100%" }}>Joueurs</Button>
+                            <Button variant="info" onClick={() => setShowPlayerSetup(true)} style={{ width: "100%" }}>{txtBtnPlayers}</Button>
                         </Col>
                         <Col xs={3}>
                             <Button variant="success" onClick={() => setShowOptions(true)}>Options</Button>

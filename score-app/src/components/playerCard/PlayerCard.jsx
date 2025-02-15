@@ -48,7 +48,7 @@ const PlayerCard = ({ playerData, index }) => {
                         <Card.Title onClick={() => setShowMoreScore(true)} >
                             {playerName}
                         </Card.Title>
-                        <Card.Text >
+                        <div className='mb-2'>
                             <Row>
                                 <Col xs={3} >
                                 </Col>
@@ -61,16 +61,16 @@ const PlayerCard = ({ playerData, index }) => {
                                         <>
                                             {/* Utiliser un <span> pour éviter l'erreur de validation du DOM */}
                                             {totalScorePlus > 0 ? (
-                                                <p className="text-success"><span><strong>+{totalScorePlus}</strong></span></p>
+                                                <div className="text-success"><span><strong>+{totalScorePlus}</strong></span></div>
                                             ) : totalScorePlus < 0 ? (
-                                                <p className="text-danger"><span><strong>{totalScorePlus}</strong></span></p>
+                                                <div className="text-danger"><span><strong>{totalScorePlus}</strong></span></div>
                                             ) : null}
                                         </>
                                     )}
                                 </Col>
 
                             </Row>
-                        </Card.Text>
+                        </div>
                         <Row>
                             <Col xs={6} sm={6}>
                                 <Button variant="success" onClick={() => updateScore(1)}>+</Button>
