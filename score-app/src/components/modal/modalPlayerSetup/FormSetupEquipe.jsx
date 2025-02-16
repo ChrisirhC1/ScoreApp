@@ -71,11 +71,14 @@ const FormSetupEquipe = ({
                 <ListGroup.Item
                   key={player.id}
                   className="d-flex justify-content-between align-items-center"
-                  onClick={() => {
-                    if (isEditing === null) handleEditClick(player.id);
-                  }}
                 >
-                  {player.name}
+                  <div
+                    onClick={() => {
+                      if (isEditing === null) handleEditClick(player.id);
+                    }}
+                  >
+                    {player.name}
+                  </div>
                   <div>
                     <Button
                       variant="danger"
