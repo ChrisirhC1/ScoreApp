@@ -11,7 +11,7 @@ const FormSetupEquipe = ({
   handleEditClick,
   removePlayer,
 }) => {
-  const { getPlayersByTeam } = usePlayers();
+  const { getPlayersByTeam, addTeam } = usePlayers();
 
   return (
     <>
@@ -27,7 +27,11 @@ const FormSetupEquipe = ({
             onChange={(e) => setCurrentPlayer(e.target.value)}
           />
         </Form.Group>
-        <Button type="submit" variant="primary" disabled={!currentPlayer.trim()}>
+        <Button
+          type="submit"
+          variant="primary"
+          disabled={!currentPlayer.trim()}
+        >
           {isEditing !== null ? "Modifier" : "Ajouter"}
         </Button>
       </Form>
@@ -63,6 +67,15 @@ const FormSetupEquipe = ({
             </ListGroup>
           </Col>
         ))}
+        <Col xs={12} className="mt-3">
+          <Button
+            variant="dark"
+            onClick={() => addTeam()}
+            style={{ width: "100%" }}
+          >
+            Ajouter une équipe
+          </Button>
+        </Col>
       </Row>
     </>
   );

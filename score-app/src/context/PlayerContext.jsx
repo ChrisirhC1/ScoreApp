@@ -62,7 +62,7 @@ export const PlayerProvider = ({ children }) => {
   const saveTeams = (teams) => {
     if (!teams || teams.length === 0) {
       localStorage.removeItem("teams");
-      setPlayers([]);
+      setTeams([]);
     } else {
       localStorage.setItem("teams", JSON.stringify(teams));
       setTeams(teams);
@@ -115,7 +115,7 @@ export const PlayerProvider = ({ children }) => {
 
   const addTeam = () => {
     const newId = getNewIdTeam();
-    const newTeam = { id: newId, teamName: `Équipe ${newId}` };
+    const newTeam = { id: newId, teamName: `Équipe ${newId[1]}` };
     const updatedTeams = [...teams, newTeam];
     setTeams(updatedTeams);
     saveTeams(updatedTeams);
@@ -206,6 +206,7 @@ export const PlayerProvider = ({ children }) => {
         teamMode,
         getTeamMode,
         getPlayersByTeam,
+        addTeam,
       }}
     >
       {children}
