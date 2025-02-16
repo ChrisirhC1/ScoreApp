@@ -21,9 +21,24 @@ export const PlayerProvider = ({ children }) => {
     }
   }, []);
 
-  // méthodes pour mettre une majuscule sur la premiere lettre du nom
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  const getNewIdPlayer = () => {
+    let newId = `p${players.length + 1}`;
+    while (players.find((player) => player.id === newId)) {
+      newId = `p${parseInt(newId.slice(1)) + 1}`;
+    }
+    return newId;
+  };
+
+  const getNewIdTeam = () => {
+    let newId = `t${teams.length + 1}`;
+    while (teams.find((team) => team.id === newId)) {
+      newId = `t${parseInt(newId.slice(1)) + 1}`;
+    }
+    return newId;
   };
 
   const allowNegativeScores = (bool) => {
@@ -55,30 +70,26 @@ export const PlayerProvider = ({ children }) => {
   };
 
   const teamMode = (bool) => {
-    // si le mode équipe est activé, on ajoute 2 équipes par défaut et on repartit les joueurs dans ces équipes
     if (bool) {
       setIsTeamMode(true);
       if (teams.length === 0) {
-        // Ajouter directement deux équipes
         const initialTeams = [
-          { id: 1, teamName: "Équipe 1" },
-          { id: 2, teamName: "Équipe 2" },
+          { id: "t1", teamName: "Équipe 1" },
+          { id: "t2", teamName: "Équipe 2" },
         ];
         setTeams(initialTeams);
         saveTeams(initialTeams);
       }
       const updatedPlayers = players.map((player, index) => {
-        return { ...player, team: (index % 2) + 1 };
+        return { ...player, team: `t${(index % 2) + 1}` };
       });
       setPlayers(updatedPlayers);
       savePlayers(updatedPlayers);
     } else {
-      // si le mode équipe est désactivé, on supprime les équipes et on supprime "team" des joueurs
       setIsTeamMode(false);
       setTeams([]);
       saveTeams([]);
       const updatedPlayers = players.map(({ team, ...player }) => player);
-
       setPlayers(updatedPlayers);
       savePlayers(updatedPlayers);
     }
@@ -91,49 +102,31 @@ export const PlayerProvider = ({ children }) => {
   const addPlayer = (playerName) => {
     if (playerName.trim()) {
       playerName = capitalizeFirstLetter(playerName);
+      const newId = getNewIdPlayer();
+      const newPlayer = { id: newId, name: playerName, score: 0 };
       if (isTeamMode) {
-        const updatedPlayers = [
-          ...players,
-          { name: playerName, score: 0, team: 1 },
-        ];
-        setPlayers(updatedPlayers);
-        savePlayers(updatedPlayers);
-      } else {
-        const updatedPlayers = [...players, { name: playerName, score: 0 }];
-        setPlayers(updatedPlayers);
-        savePlayers(updatedPlayers);
+        newPlayer.team = "t1";
       }
+      const updatedPlayers = [...players, newPlayer];
+      setPlayers(updatedPlayers);
+      savePlayers(updatedPlayers);
     }
   };
 
   const addTeam = () => {
-    // Générer un nouvel ID basé sur la longueur de la liste existante
-    const newId =
-      teams.length > 0 ? Math.max(...teams.map((team) => team.id)) + 1 : 1;
-
-    // Créer la nouvelle équipe
+    const newId = getNewIdTeam();
     const newTeam = { id: newId, teamName: `Équipe ${newId}` };
-
-    // Ajouter la nouvelle équipe sans remplacer l'ancienne liste
     const updatedTeams = [...teams, newTeam];
-
-    // Mettre à jour l'état
     setTeams(updatedTeams);
-
-    // Sauvegarder la liste mise à jour
     saveTeams(updatedTeams);
-
-    console.log(updatedTeams);
   };
 
-  const editPlayer = (index, newName) => {
+  const editPlayer = (id, newName) => {
     if (newName.trim()) {
       newName = capitalizeFirstLetter(newName);
-      const updatedPlayers = [...players];
-      updatedPlayers[index] = {
-        ...updatedPlayers[index],
-        name: newName,
-      };
+      const updatedPlayers = players.map((player) =>
+        player.id === id ? { ...player, name: newName } : player
+      );
       setPlayers(updatedPlayers);
       savePlayers(updatedPlayers);
     }
@@ -147,48 +140,46 @@ export const PlayerProvider = ({ children }) => {
     return players.filter((player) => player.team === team);
   };
 
-  const getPlayersInfos = (index) => {
-    return players[index];
+  const getPlayersInfos = (id) => {
+    return players.find((player) => player.id === id);
   };
 
-  const removePlayer = (index) => {
-    const updatedPlayers = players.filter((_, i) => i !== index);
+  const removePlayer = (id) => {
+    const updatedPlayers = players.filter((player) => player.id !== id);
     setPlayers(updatedPlayers);
     savePlayers(updatedPlayers);
   };
 
-  const addPoints = (index, points) => {
-    const updatedPlayers = [...players];
-    updatedPlayers[index].score += points;
+  const addPoints = (id, points) => {
+    const updatedPlayers = players.map((player) =>
+      player.id === id ? { ...player, score: player.score + points } : player
+    );
     setPlayers(updatedPlayers);
     savePlayers(updatedPlayers);
   };
 
-  const removePoints = (index, points) => {
-    const updatedPlayers = [...players];
-    updatedPlayers[index].score -= points;
+  const removePoints = (id, points) => {
+    const updatedPlayers = players.map((player) =>
+      player.id === id ? { ...player, score: player.score - points } : player
+    );
     setPlayers(updatedPlayers);
     savePlayers(updatedPlayers);
   };
 
-  const movePlayer = (index, team) => {
-    const updatedPlayers = [...players];
-    updatedPlayers[index].team = team;
+  const movePlayer = (id, team) => {
+    const updatedPlayers = players.map((player) =>
+      player.id === id ? { ...player, team: team } : player
+    );
     setPlayers(updatedPlayers);
     savePlayers(updatedPlayers);
   };
 
   const resetScores = () => {
     const updatedPlayers = players.map((player) => {
-      return { name: player.name, score: 0 };
+      return { ...player, score: 0 };
     });
-
-    if (updatedPlayers.length === 0) {
-      localStorage.removeItem("players");
-    } else {
-      setPlayers(updatedPlayers);
-      savePlayers(updatedPlayers);
-    }
+    setPlayers(updatedPlayers);
+    savePlayers(updatedPlayers);
   };
 
   const clearPlayers = () => {

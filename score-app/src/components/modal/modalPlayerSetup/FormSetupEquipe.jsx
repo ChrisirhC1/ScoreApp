@@ -15,8 +15,6 @@ const FormSetupEquipe = ({
 
   return (
     <>
-      {/*Formulaire d'ajout/modification pour équipe*/}
-
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
           <Form.Label>
@@ -29,33 +27,24 @@ const FormSetupEquipe = ({
             onChange={(e) => setCurrentPlayer(e.target.value)}
           />
         </Form.Group>
-        <Button
-          type="submit"
-          variant="primary"
-          disabled={!currentPlayer.trim()}
-        >
+        <Button type="submit" variant="primary" disabled={!currentPlayer.trim()}>
           {isEditing !== null ? "Modifier" : "Ajouter"}
         </Button>
       </Form>
 
-      {/*liste des equipes. Dans des carrés avec les noms des joueurs et un bouton modifier / supprimer */}
       <Row>
         {teams.map((team) => (
           <Col xs={6} key={team.id}>
-            {/*Dans un carré le nom de l'équipe et en dessous les noms des joueurs avec un boutton modifer et supprimer */}
             <ListGroup className="mt-3">
-              <ListGroup.Item
-                key={team.id}
-                className="d-flex justify-content-between align-items-center"
-              >
+              <ListGroup.Item className="d-flex justify-content-between align-items-center">
                 {team.teamName}
               </ListGroup.Item>
-              {getPlayersByTeam(team.id).map((player, index) => (
+              {getPlayersByTeam(team.id).map((player) => (
                 <ListGroup.Item
-                  key={index}
+                  key={player.id}
                   className="d-flex justify-content-between align-items-center"
                   onClick={() => {
-                    if (isEditing === null) handleEditClick(index);
+                    if (isEditing === null) handleEditClick(player.id);
                   }}
                 >
                   {player.name}
@@ -63,7 +52,7 @@ const FormSetupEquipe = ({
                     <Button
                       variant="danger"
                       size="sm"
-                      onClick={() => removePlayer(index)}
+                      onClick={() => removePlayer(player.id)}
                       disabled={isEditing !== null}
                     >
                       ❌

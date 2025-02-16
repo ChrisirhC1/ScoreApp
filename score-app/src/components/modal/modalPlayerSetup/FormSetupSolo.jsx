@@ -10,9 +10,7 @@ const FormSetupSolo = ({
   removePlayer,
 }) => {
   return (
-    <> 
-      {/*Formulaire d'ajout/modification pour solo*/}
-
+    <>
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
           <Form.Label>
@@ -25,20 +23,15 @@ const FormSetupSolo = ({
             onChange={(e) => setCurrentPlayer(e.target.value)}
           />
         </Form.Group>
-        <Button
-          type="submit"
-          variant="primary"
-          disabled={!currentPlayer.trim()}
-        >
+        <Button type="submit" variant="primary" disabled={!currentPlayer.trim()}>
           {isEditing !== null ? "Modifier" : "Ajouter"}
         </Button>
       </Form>
 
-      {/* Liste des joueurs avec options Modifier / Supprimer */}
       <ListGroup className="mt-3">
-        {players.map((player, index) => (
+        {players.map((player) => (
           <ListGroup.Item
-            key={index}
+            key={player.id}
             className="d-flex justify-content-between align-items-center"
           >
             {player.name}
@@ -47,7 +40,7 @@ const FormSetupSolo = ({
                 variant="warning"
                 size="sm"
                 className="me-2"
-                onClick={() => handleEditClick(index)}
+                onClick={() => handleEditClick(player.id)}
                 disabled={isEditing !== null}
               >
                 Modifier
@@ -55,7 +48,7 @@ const FormSetupSolo = ({
               <Button
                 variant="danger"
                 size="sm"
-                onClick={() => removePlayer(index)}
+                onClick={() => removePlayer(player.id)}
                 disabled={isEditing !== null}
               >
                 Supprimer

@@ -24,9 +24,9 @@ const Home = () => {
             <Row className="flex-grow-1">
                 <div className='content'>
                     <Row>
-                        {players.map((player, index) => (
-                            <Col key={index} xs={6} md={6} lg={4}>
-                                <PlayerCard playerData={player} index={index} />
+                        {players.map((player) => (
+                            <Col key={player.id} xs={6} md={6} lg={4}>
+                                <PlayerCard playerData={player} />
                             </Col>
                         ))}
 

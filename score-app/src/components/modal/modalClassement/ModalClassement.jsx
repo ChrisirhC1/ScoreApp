@@ -29,7 +29,7 @@ const ModalClassement = ({ show, setShow }) => {
                             </thead>
                             <tbody>
                                 {sortedPlayers.map((player, index) => (
-                                    <tr key={index}>
+                                    <tr key={player.id}>
                                         <td>{index + 1}</td>
                                         <td>{player.name}</td>
                                         <td>{player.score}</td>

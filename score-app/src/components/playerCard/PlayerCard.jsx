@@ -5,9 +5,10 @@ import { usePlayers } from '../../context/PlayerContext';
 import ModalMoreScore from '../modal/modalMoreScore/ModalMoreScore';
 
 
-const PlayerCard = ({ playerData, index }) => {
+const PlayerCard = ({ playerData }) => {
 
     const { addPoints, removePoints, getAllowNegativeScores } = usePlayers();
+    const playerId = playerData.id;
     const playerName = playerData.name;
     const playerScore = playerData.score;
     const [totalScorePlus, setTotalScorePlus] = useState(0);
@@ -21,10 +22,10 @@ const PlayerCard = ({ playerData, index }) => {
     const updateScore = async (value) => {
         if (getAllowNegativeScores() === false && playerScore + value < 0) {
 
-            removePoints(index, playerScore)
+            removePoints(playerId, playerScore)
             return false;
         }
-        value > 0 ? addPoints(index, value) : removePoints(index, Math.abs(value));
+        value > 0 ? addPoints(playerId, value) : removePoints(playerId, Math.abs(value));
         setTotalScorePlus(totalScorePlus + value);
         setShowTotalScorePlus(true);
 
@@ -83,7 +84,7 @@ const PlayerCard = ({ playerData, index }) => {
                 </Card>
             </div>
 
-            <ModalMoreScore showMoreScore={showMoreScore} setShowMoreScore={setShowMoreScore} playerName={playerName} playerScore={playerScore} updateScore={updateScore} totalScorePlus={totalScorePlus} setTotalScorePlus={setTotalScorePlus} index={index} />
+            <ModalMoreScore showMoreScore={showMoreScore} setShowMoreScore={setShowMoreScore} playerName={playerName} playerScore={playerScore} updateScore={updateScore} totalScorePlus={totalScorePlus} setTotalScorePlus={setTotalScorePlus} />
         </>
     );
 };

@@ -2,7 +2,7 @@ import { Button, Col, Modal, Row } from "react-bootstrap";
 import './modalMoreScore.css';
 import { useState } from "react";
 
-const ModalMoreScore = ({ showMoreScore, setShowMoreScore, playerName, playerScore, updateScore, totalScorePlus, setTotalScorePlus, index }) => {
+const ModalMoreScore = ({ showMoreScore, setShowMoreScore, playerName, playerScore, updateScore, totalScorePlus, setTotalScorePlus }) => {
 
     const handleClose = () => {
         
