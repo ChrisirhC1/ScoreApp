@@ -172,6 +172,7 @@ export const PlayerProvider = ({ children }) => {
     );
     setPlayers(updatedPlayers);
     savePlayers(updatedPlayers);
+    console.log("je dèplace le joueur", id, "dans l'équipe", team);
   };
 
   const teamMode = (bool) => {

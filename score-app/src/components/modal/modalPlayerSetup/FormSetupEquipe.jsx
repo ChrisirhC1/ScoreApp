@@ -6,6 +6,8 @@ const FormSetupEquipe = ({
   handleSubmit,
   currentPlayer,
   setCurrentPlayer,
+  currentTeam,
+  setCurrentTeam,
   isEditing,
   players,
   teams,
@@ -22,12 +24,26 @@ const FormSetupEquipe = ({
           <Form.Label>
             {isEditing !== null ? "Modifier un joueur" : "Ajouter un joueur"}
           </Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Nom du joueur"
-            value={currentPlayer}
-            onChange={(e) => setCurrentPlayer(e.target.value)}
-          />
+          <Row>
+            <Col xs={6}>
+              <Form.Control
+                type="text"
+                placeholder="Nom du joueur"
+                value={currentPlayer}
+                onChange={(e) => setCurrentPlayer(e.target.value)}
+              />
+            </Col>
+            <Col xs={6}>
+              <Form.Select
+                value={currentTeam}
+                onChange={(e) => setCurrentTeam(e.target.value)}
+              >
+                {teams.map((team) => (
+                  <option key={team.id} value={team.id}>{team.teamName}</option>
+                ))}
+              </Form.Select>
+            </Col>
+          </Row>
         </Form.Group>
         <Button
           type="submit"
