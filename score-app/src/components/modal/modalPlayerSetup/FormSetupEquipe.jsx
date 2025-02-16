@@ -1,4 +1,5 @@
 import { Button, Col, Form, ListGroup, Row } from "react-bootstrap";
+import { useState } from "react";
 import { usePlayers } from "../../../context/PlayerContext";
 
 const FormSetupEquipe = ({
@@ -11,7 +12,8 @@ const FormSetupEquipe = ({
   handleEditClick,
   removePlayer,
 }) => {
-  const { getPlayersByTeam, addTeam } = usePlayers();
+  const { getPlayersByTeam, addTeam, removeTeam } = usePlayers();
+  const [hoveredTeamId, setHoveredTeamId] = useState(null);
 
   return (
     <>
@@ -40,8 +42,30 @@ const FormSetupEquipe = ({
         {teams.map((team) => (
           <Col xs={6} key={team.id}>
             <ListGroup className="mt-3">
-              <ListGroup.Item className="d-flex justify-content-between align-items-center">
+              <ListGroup.Item
+                className="d-flex justify-content-between align-items-center"
+                onMouseEnter={() => setHoveredTeamId(team.id)}
+                onMouseLeave={() => setHoveredTeamId(null)}
+                style={{ position: "relative" }}
+              >
                 {team.teamName}
+                {hoveredTeamId === team.id && (
+                  <Button
+                    variant="none"
+                    size="sm"
+                    style={{
+                      position: "absolute",
+                      top: "5px",
+                      right: "5px",
+                      padding: "2px 5px",
+                      fontSize: "12px",
+                      lineHeight: "1",
+                    }}
+                    onClick={() => removeTeam(team.id)}
+                  >
+                    ❌
+                  </Button>
+                )}
               </ListGroup.Item>
               {getPlayersByTeam(team.id).map((player) => (
                 <ListGroup.Item

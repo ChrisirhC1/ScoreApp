@@ -121,6 +121,28 @@ export const PlayerProvider = ({ children }) => {
     saveTeams(updatedTeams);
   };
 
+  const removeTeam = (id) => {
+    // Vérifier si l'équipe supprimée est la première (t1)
+    const isDeletingT1 = id === "t1";
+  
+    // Supprimer l'équipe sélectionnée
+    const updatedTeams = teams.filter((team) => team.id !== id);
+    setTeams(updatedTeams);
+    saveTeams(updatedTeams);
+  
+    // Trouver une autre équipe existante pour réattribuer les joueurs
+    const newTeamId = updatedTeams.length > 0 ? updatedTeams[0].id : null;
+  
+    // Mettre à jour les joueurs : si leur équipe est supprimée, leur donner la nouvelle équipe
+    const updatedPlayers = players.map((player) =>
+      player.team === id ? { ...player, team: newTeamId } : player
+    );
+  
+    setPlayers(updatedPlayers);
+    savePlayers(updatedPlayers);
+  };
+  
+
   const editPlayer = (id, newName) => {
     if (newName.trim()) {
       newName = capitalizeFirstLetter(newName);
@@ -207,6 +229,7 @@ export const PlayerProvider = ({ children }) => {
         getTeamMode,
         getPlayersByTeam,
         addTeam,
+        removeTeam,
       }}
     >
       {children}
