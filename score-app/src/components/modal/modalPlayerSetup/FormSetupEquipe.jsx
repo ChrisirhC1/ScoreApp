@@ -38,41 +38,10 @@ const FormSetupEquipe = ({
         </Button>
       </Form>
 
-      {/* Liste des équipes avec options Modifier / Supprimer */}
-      {/* <ListGroup className="mt-3">
-        {players.map((player, index) => (
-          <ListGroup.Item
-            key={index}
-            className="d-flex justify-content-between align-items-center"
-          >
-            {player.name}
-            <div>
-              <Button
-                variant="warning"
-                size="sm"
-                className="me-2"
-                onClick={() => handleEditClick(index)}
-                disabled={isEditing !== null}
-              >
-                Modifier
-              </Button>
-              <Button
-                variant="danger"
-                size="sm"
-                onClick={() => removePlayer(index)}
-                disabled={isEditing !== null}
-              >
-                Supprimer
-              </Button>
-            </div>
-          </ListGroup.Item>
-        ))}
-      </ListGroup> */}
-
       {/*liste des equipes. Dans des carrés avec les noms des joueurs et un bouton modifier / supprimer */}
       <Row>
         {teams.map((team) => (
-          <Col xs={6}>
+          <Col xs={6} key={team.id}>
             {/*Dans un carré le nom de l'équipe et en dessous les noms des joueurs avec un boutton modifer et supprimer */}
             <ListGroup className="mt-3">
               <ListGroup.Item
@@ -85,18 +54,12 @@ const FormSetupEquipe = ({
                 <ListGroup.Item
                   key={index}
                   className="d-flex justify-content-between align-items-center"
+                  onClick={() => {
+                    if (isEditing === null) handleEditClick(index);
+                  }}
                 >
                   {player.name}
                   <div>
-                    <Button
-                      variant="warning"
-                      size="sm"
-                      className="me-2"
-                      onClick={() => handleEditClick(index)}
-                      disabled={isEditing !== null}
-                    >
-                      ✏
-                    </Button>
                     <Button
                       variant="danger"
                       size="sm"
