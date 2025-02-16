@@ -21,6 +21,10 @@ export const PlayerProvider = ({ children }) => {
     }
   }, []);
 
+  /*############################################################
+  ######################### UTILITAIRES ########################
+  ############################################################*/
+
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
@@ -39,14 +43,6 @@ export const PlayerProvider = ({ children }) => {
       newId = `t${parseInt(newId.slice(1)) + 1}`;
     }
     return newId;
-  };
-
-  const allowNegativeScores = (bool) => {
-    setIsNegativeScore(bool);
-  };
-
-  const getAllowNegativeScores = () => {
-    return isNegativeScore;
   };
 
   const savePlayers = (players) => {
@@ -69,35 +65,21 @@ export const PlayerProvider = ({ children }) => {
     }
   };
 
-  const teamMode = (bool) => {
-    if (bool) {
-      setIsTeamMode(true);
-      if (teams.length === 0) {
-        const initialTeams = [
-          { id: "t1", teamName: "Équipe 1" },
-          { id: "t2", teamName: "Équipe 2" },
-        ];
-        setTeams(initialTeams);
-        saveTeams(initialTeams);
-      }
-      const updatedPlayers = players.map((player, index) => {
-        return { ...player, team: `t${(index % 2) + 1}` };
-      });
-      setPlayers(updatedPlayers);
-      savePlayers(updatedPlayers);
-    } else {
-      setIsTeamMode(false);
-      setTeams([]);
-      saveTeams([]);
-      const updatedPlayers = players.map(({ team, ...player }) => player);
-      setPlayers(updatedPlayers);
-      savePlayers(updatedPlayers);
-    }
+  /*############################################################
+  ######################### SCORES #############################
+  ############################################################*/
+
+  const allowNegativeScores = (bool) => {
+    setIsNegativeScore(bool);
   };
 
-  const getTeamMode = () => {
-    return isTeamMode;
+  const getAllowNegativeScores = () => {
+    return isNegativeScore;
   };
+
+  /*############################################################
+  ######################### PLAYERS ############################
+  ############################################################*/
 
   const addPlayer = (playerName) => {
     if (playerName.trim()) {
@@ -113,36 +95,6 @@ export const PlayerProvider = ({ children }) => {
     }
   };
 
-  const addTeam = () => {
-    const newId = getNewIdTeam();
-    const newTeam = { id: newId, teamName: `Équipe ${newId[1]}` };
-    const updatedTeams = [...teams, newTeam];
-    setTeams(updatedTeams);
-    saveTeams(updatedTeams);
-  };
-
-  const removeTeam = (id) => {
-    // Vérifier si l'équipe supprimée est la première (t1)
-    const isDeletingT1 = id === "t1";
-  
-    // Supprimer l'équipe sélectionnée
-    const updatedTeams = teams.filter((team) => team.id !== id);
-    setTeams(updatedTeams);
-    saveTeams(updatedTeams);
-  
-    // Trouver une autre équipe existante pour réattribuer les joueurs
-    const newTeamId = updatedTeams.length > 0 ? updatedTeams[0].id : null;
-  
-    // Mettre à jour les joueurs : si leur équipe est supprimée, leur donner la nouvelle équipe
-    const updatedPlayers = players.map((player) =>
-      player.team === id ? { ...player, team: newTeamId } : player
-    );
-  
-    setPlayers(updatedPlayers);
-    savePlayers(updatedPlayers);
-  };
-  
-
   const editPlayer = (id, newName) => {
     if (newName.trim()) {
       newName = capitalizeFirstLetter(newName);
@@ -154,17 +106,12 @@ export const PlayerProvider = ({ children }) => {
     }
   };
 
-  const getPlayers = () => {
-    return players;
-  };
+  const getPlayers = () => players;
 
-  const getPlayersByTeam = (team) => {
-    return players.filter((player) => player.team === team);
-  };
+  const getPlayersByTeam = (team) =>
+    players.filter((player) => player.team === team);
 
-  const getPlayersInfos = (id) => {
-    return players.find((player) => player.id === id);
-  };
+  const getPlayersInfos = (id) => players.find((player) => player.id === id);
 
   const removePlayer = (id) => {
     const updatedPlayers = players.filter((player) => player.id !== id);
@@ -188,21 +135,77 @@ export const PlayerProvider = ({ children }) => {
     savePlayers(updatedPlayers);
   };
 
-  const movePlayer = (id, team) => {
+  const resetScores = () => {
+    const updatedPlayers = players.map((player) => ({ ...player, score: 0 }));
+    setPlayers(updatedPlayers);
+    savePlayers(updatedPlayers);
+  };
+
+  /*############################################################
+  ########################### TEAMS ############################
+  ############################################################*/
+
+  const addTeam = () => {
+    const newId = getNewIdTeam();
+    const newTeam = { id: newId, teamName: `Équipe ${newId[1]}` };
+    const updatedTeams = [...teams, newTeam];
+    setTeams(updatedTeams);
+    saveTeams(updatedTeams);
+  };
+
+  const removeTeam = (id) => {
+    const updatedTeams = teams.filter((team) => team.id !== id);
+    setTeams(updatedTeams);
+    saveTeams(updatedTeams);
+
+    const newTeamId = updatedTeams.length > 0 ? updatedTeams[0].id : null;
     const updatedPlayers = players.map((player) =>
-      player.id === id ? { ...player, team: team } : player
+      player.team === id ? { ...player, team: newTeamId } : player
     );
     setPlayers(updatedPlayers);
     savePlayers(updatedPlayers);
   };
 
-  const resetScores = () => {
-    const updatedPlayers = players.map((player) => {
-      return { ...player, score: 0 };
-    });
+  const movePlayer = (id, team) => {
+    const updatedPlayers = players.map((player) =>
+      player.id === id ? { ...player, team } : player
+    );
     setPlayers(updatedPlayers);
     savePlayers(updatedPlayers);
   };
+
+  const teamMode = (bool) => {
+    if (bool) {
+      setIsTeamMode(true);
+      if (teams.length === 0) {
+        const initialTeams = [
+          { id: "t1", teamName: "Équipe 1" },
+          { id: "t2", teamName: "Équipe 2" },
+        ];
+        setTeams(initialTeams);
+        saveTeams(initialTeams);
+      }
+      const updatedPlayers = players.map((player, index) => ({
+        ...player,
+        team: `t${(index % 2) + 1}`,
+      }));
+      setPlayers(updatedPlayers);
+      savePlayers(updatedPlayers);
+    } else {
+      setIsTeamMode(false);
+      setTeams([]);
+      saveTeams([]);
+      const updatedPlayers = players.map(({ team, ...player }) => player);
+      setPlayers(updatedPlayers);
+      savePlayers(updatedPlayers);
+    }
+  };
+
+  const getTeamMode = () => isTeamMode;
+
+  /*###########################################################
+  ########################### RESET ###########################
+  ############################################################*/
 
   const clearPlayers = () => {
     savePlayers([]);
