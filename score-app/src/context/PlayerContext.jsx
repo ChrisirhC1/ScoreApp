@@ -81,13 +81,16 @@ export const PlayerProvider = ({ children }) => {
   ######################### PLAYERS ############################
   ############################################################*/
 
-  const addPlayer = (playerName) => {
+  const addPlayer =  (playerName, teamId) => {
     if (playerName.trim()) {
       playerName = capitalizeFirstLetter(playerName);
       const newId = getNewIdPlayer();
       const newPlayer = { id: newId, name: playerName, score: 0 };
       if (isTeamMode) {
-        newPlayer.team = "t1";
+        
+        newPlayer.team = teamId;
+
+        
       }
       const updatedPlayers = [...players, newPlayer];
       setPlayers(updatedPlayers);
@@ -151,6 +154,7 @@ export const PlayerProvider = ({ children }) => {
     const updatedTeams = [...teams, newTeam];
     setTeams(updatedTeams);
     saveTeams(updatedTeams);
+    console.log("ajout d'une équipe", updatedTeams);
   };
 
   const removeTeam = (id) => {
@@ -162,6 +166,11 @@ export const PlayerProvider = ({ children }) => {
     const updatedPlayers = players.map((player) =>
       player.team === id ? { ...player, team: newTeamId } : player
     );
+
+    if (updatedTeams.length === 0) {
+      
+      setIsTeamMode(false);
+    }
     setPlayers(updatedPlayers);
     savePlayers(updatedPlayers);
   };
@@ -172,7 +181,7 @@ export const PlayerProvider = ({ children }) => {
     );
     setPlayers(updatedPlayers);
     savePlayers(updatedPlayers);
-    console.log("je dèplace le joueur", id, "dans l'équipe", team);
+    // console.log("je dèplace le joueur", id, "dans l'équipe", team);
   };
 
   const teamMode = (bool) => {
@@ -204,6 +213,17 @@ export const PlayerProvider = ({ children }) => {
 
   const getTeamMode = () => isTeamMode;
 
+  const shuffleEquipes = () => {
+    // mélanger les joueurs dans les équipes existantes
+    const shuffledPlayers = players.sort(() => Math.random() - 0.5);
+    const updatedPlayers = shuffledPlayers.map((player, index) => ({
+      ...player,
+      team: `t${(index % teams.length) + 1}`,
+    }));
+    setPlayers(updatedPlayers);
+    savePlayers(updatedPlayers);
+  };
+
   /*###########################################################
   ########################### RESET ###########################
   ############################################################*/
@@ -234,6 +254,7 @@ export const PlayerProvider = ({ children }) => {
         getPlayersByTeam,
         addTeam,
         removeTeam,
+        shuffleEquipes,
       }}
     >
       {children}

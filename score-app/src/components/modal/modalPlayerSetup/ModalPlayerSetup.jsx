@@ -22,6 +22,7 @@ const ModalPlayerSetup = ({ show, setShow }) => {
 
   useEffect(() => {
     setIsTeamMode(getTeamMode());
+
   }, [getTeamMode]);
 
   // Ajout ou modification d'un joueur
@@ -33,7 +34,7 @@ const ModalPlayerSetup = ({ show, setShow }) => {
       setIsEditing(null); // Réinitialiser le mode édition
       setCurrentTeam("");
     } else {
-      addPlayer(currentPlayer); // Ajouter un nouveau joueur
+      addPlayer(currentPlayer, currentTeam); // Ajouter un nouveau joueur
     }
     setCurrentPlayer("");
   };

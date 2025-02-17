@@ -14,7 +14,7 @@ const FormSetupEquipe = ({
   handleEditClick,
   removePlayer,
 }) => {
-  const { getPlayersByTeam, addTeam, removeTeam } = usePlayers();
+  const { getPlayersByTeam, addTeam, removeTeam, shuffleEquipes } = usePlayers();
   const [hoveredTeamId, setHoveredTeamId] = useState(null);
 
   return (
@@ -48,7 +48,7 @@ const FormSetupEquipe = ({
         <Button
           type="submit"
           variant="primary"
-          disabled={!currentPlayer.trim()}
+          disabled={currentPlayer.trim() === "" && currentTeam === "" }
         >
           {isEditing !== null ? "Modifier" : "Ajouter"}
         </Button>
@@ -97,7 +97,7 @@ const FormSetupEquipe = ({
                   </div>
                   <div>
                     <Button
-                      variant="danger"
+                      variant="none"
                       size="sm"
                       onClick={() => removePlayer(player.id)}
                       disabled={isEditing !== null}
@@ -117,6 +117,16 @@ const FormSetupEquipe = ({
             style={{ width: "100%" }}
           >
             Ajouter une équipe
+          </Button>
+        </Col>
+        <Col xs={12} className="mt-3">
+          <Button
+            variant="success"
+            onClick={() => shuffleEquipes()}
+            style={{ width: "100%" }}
+            disabled={players.length <= 1}
+          >
+            🔀 Shuffle
           </Button>
         </Col>
       </Row>
