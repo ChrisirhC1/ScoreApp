@@ -47,7 +47,7 @@ const ModalClassement = ({ show, setShow }) => {
             />
 
             {/* Tableau des scores Solo */}
-            {teamMode ? (
+            {teamMode && getTeamMode()? (
               <>
                 {sortedTeams.map((team, index) => (
                   <Table striped bordered hover key={team.team}>
