@@ -22,17 +22,21 @@ const ModalPlayerSetup = ({ show, setShow }) => {
 
   useEffect(() => {
     setIsTeamMode(getTeamMode());
-
   }, [getTeamMode]);
 
   // Ajout ou modification d'un joueur
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isEditing !== null) {
-      editPlayer(isEditing, currentPlayer); // Modifier un joueur existant
-      movePlayer(isEditing, currentTeam);
+      editPlayer(isEditing, currentPlayer, currentTeam); // Modifier un joueur existant
       setIsEditing(null); // Réinitialiser le mode édition
       setCurrentTeam("");
+      console.log(
+        "je veux éditer le joueur",
+        isEditing,
+        "avec le nom",
+        currentPlayer
+      );
     } else {
       addPlayer(currentPlayer, currentTeam); // Ajouter un nouveau joueur
     }
@@ -106,7 +110,5 @@ const ModalPlayerSetup = ({ show, setShow }) => {
     </Modal>
   );
 };
-
-
 
 export default ModalPlayerSetup;

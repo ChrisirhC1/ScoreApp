@@ -3,7 +3,7 @@ import { usePlayers } from "../../../context/PlayerContext";
 import { useState } from "react";
 
 const ModalClassement = ({ show, setShow }) => {
-  const { getPlayers } = usePlayers();
+  const { getPlayers, getTeamMode } = usePlayers();
   const [teamMode, setTeamMode] = useState(false); // État pour afficher par équipe ou solo
 
   const players = getPlayers();
@@ -41,8 +41,9 @@ const ModalClassement = ({ show, setShow }) => {
               type="switch"
               id="switch-mode"
               label="Classement par équipe"
-              checked={teamMode}
+              checked={getTeamMode() && teamMode}
               onChange={() => setTeamMode(!teamMode)}
+              disabled={!getTeamMode()}
             />
 
             {/* Tableau des scores Solo */}
@@ -51,7 +52,7 @@ const ModalClassement = ({ show, setShow }) => {
                 {sortedTeams.map((team, index) => (
                   <Table striped bordered hover key={team.team}>
                     <thead>
-                      <tr >
+                      <tr>
                         <th>Équipe {team.team[1]} </th>
                         <th>Score {team.totalScore}</th>
                       </tr>
@@ -79,7 +80,7 @@ const ModalClassement = ({ show, setShow }) => {
                   </thead>
                   <tbody>
                     {sortedPlayers.map((player, index) => (
-                      <tr key={player.id} >
+                      <tr key={player.id}>
                         <td>{index + 1}</td>
                         <td>{player.name}</td>
                         <td>{player.score}</td>

@@ -98,12 +98,15 @@ export const PlayerProvider = ({ children }) => {
     }
   };
 
-  const editPlayer = (id, newName) => {
+  const editPlayer =  (id, newName, newTeam) => {
     if (newName.trim()) {
       newName = capitalizeFirstLetter(newName);
       const updatedPlayers = players.map((player) =>
         player.id === id ? { ...player, name: newName } : player
       );
+      if (newTeam !== undefined) {
+         movePlayer(id, newTeam);
+      }
       setPlayers(updatedPlayers);
       savePlayers(updatedPlayers);
     }
