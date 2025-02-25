@@ -9,7 +9,6 @@ lerna-debug.log*
 
 #vscode
 .vscode/*
-.gitattributes
 
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
