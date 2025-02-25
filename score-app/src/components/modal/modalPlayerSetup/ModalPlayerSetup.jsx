@@ -6,7 +6,7 @@ import FormSetupEquipe from "./FormSetupEquipe";
 
 const ModalPlayerSetup = ({ show, setShow }) => {
   const [currentPlayer, setCurrentPlayer] = useState("");
-  const [currentTeam, setCurrentTeam] = useState("");
+  const [currentTeam, setCurrentTeam] = useState("t1");
   const [isEditing, setIsEditing] = useState(null); // Gestion de l'édition
   const [isTeamMode, setIsTeamMode] = useState(false); // Gestion du mode équipe
   const {
