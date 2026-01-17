@@ -8,6 +8,8 @@ export const PlayerProvider = ({ children }) => {
   const [teams, setTeams] = useState([]);
   const [isTeamMode, setIsTeamMode] = useState(false);
   const [isNegativeScore, setIsNegativeScore] = useState(false);
+  const [gameMode] = useState(["classique", "splito"]);
+  const [currentGameMode, setCurrentGameMode] = useState("classique");
 
   useEffect(() => {
     const storedPlayers = localStorage.getItem("players");
@@ -43,6 +45,19 @@ export const PlayerProvider = ({ children }) => {
       newId = `t${parseInt(newId.slice(1)) + 1}`;
     }
     return newId;
+  };
+
+  const getGameModes = () => gameMode;
+
+  const getCurrentGameMode = () => {
+    const storedGameMode = localStorage.getItem("gameMode");
+    return storedGameMode || currentGameMode;
+  };
+  const setGameMode = (mode) => {
+    if (gameMode.includes(mode)) {
+      setCurrentGameMode(mode);
+      localStorage.setItem("gameMode", mode);
+    }
   };
 
   const savePlayers = (players) => {
@@ -81,16 +96,13 @@ export const PlayerProvider = ({ children }) => {
   ######################### PLAYERS ############################
   ############################################################*/
 
-  const addPlayer =  (playerName, teamId) => {
+  const addPlayer = (playerName, teamId) => {
     if (playerName.trim()) {
       playerName = capitalizeFirstLetter(playerName);
       const newId = getNewIdPlayer();
       const newPlayer = { id: newId, name: playerName, score: 0 };
       if (isTeamMode) {
-        
         newPlayer.team = teamId;
-
-        
       }
       const updatedPlayers = [...players, newPlayer];
       setPlayers(updatedPlayers);
@@ -98,14 +110,14 @@ export const PlayerProvider = ({ children }) => {
     }
   };
 
-  const editPlayer =  (id, newName, newTeam) => {
+  const editPlayer = (id, newName, newTeam) => {
     if (newName.trim()) {
       newName = capitalizeFirstLetter(newName);
       const updatedPlayers = players.map((player) =>
         player.id === id ? { ...player, name: newName } : player
       );
       if (newTeam !== undefined) {
-         movePlayer(id, newTeam);
+        movePlayer(id, newTeam);
       }
       setPlayers(updatedPlayers);
       savePlayers(updatedPlayers);
@@ -171,7 +183,6 @@ export const PlayerProvider = ({ children }) => {
     );
 
     if (updatedTeams.length === 0) {
-      
       setIsTeamMode(false);
     }
     setPlayers(updatedPlayers);
@@ -258,6 +269,9 @@ export const PlayerProvider = ({ children }) => {
         addTeam,
         removeTeam,
         shuffleEquipes,
+        getGameModes,
+        getCurrentGameMode,
+        setGameMode,
       }}
     >
       {children}

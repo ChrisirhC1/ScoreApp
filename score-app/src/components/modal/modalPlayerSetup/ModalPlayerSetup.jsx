@@ -18,6 +18,9 @@ const ModalPlayerSetup = ({ show, setShow }) => {
     teamMode,
     getTeamMode,
     movePlayer,
+    getCurrentGameMode,
+    setGameMode,
+    getGameModes,
   } = usePlayers();
 
   useEffect(() => {
@@ -62,34 +65,66 @@ const ModalPlayerSetup = ({ show, setShow }) => {
         <Modal.Title>Configuration des joueurs</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {/* Modes */}
+        {/* GameModes : classique | Splito */}
         <div className="mb-3">
-          {/* btn switch "mode Equipe" */}
           <Form>
-            <Form.Check
-              type="switch"
-              id="equipe-switch"
-              label="Mode Equipe"
-              checked={isTeamMode}
-              onChange={(e) => handleTeamMode(e)}
-            />
+            <Form.Label>Mode de jeu</Form.Label>
+            <Form.Select
+              aria-label="Sélection du mode de jeu"
+              value={getCurrentGameMode()}
+              onChange={(e) => setGameMode(e.target.value)}
+            >
+              {getGameModes().map((mode) => (
+                <option key={mode} value={mode}>
+                  {mode.charAt(0).toUpperCase() + mode.slice(1)}
+                </option>
+              ))}
+            </Form.Select>
           </Form>
         </div>
 
-        {isTeamMode ? (
-          <FormSetupEquipe
-            handleSubmit={handleSubmit}
-            currentPlayer={currentPlayer}
-            setCurrentPlayer={setCurrentPlayer}
-            currentTeam={currentTeam}
-            setCurrentTeam={setCurrentTeam}
-            isEditing={isEditing}
-            players={players}
-            teams={teams}
-            handleEditClick={handleEditClick}
-            removePlayer={removePlayer}
-          />
-        ) : (
+        {getCurrentGameMode() === "classique" ? (
+          <>
+            {/* Modes */}
+            <div className="mb-3">
+              {/* btn switch "mode Equipe" */}
+              <Form>
+                <Form.Check
+                  type="switch"
+                  id="equipe-switch"
+                  label="Mode Equipe"
+                  checked={isTeamMode}
+                  onChange={(e) => handleTeamMode(e)}
+                />
+              </Form>
+            </div>
+
+            {isTeamMode ? (
+              <FormSetupEquipe
+                handleSubmit={handleSubmit}
+                currentPlayer={currentPlayer}
+                setCurrentPlayer={setCurrentPlayer}
+                currentTeam={currentTeam}
+                setCurrentTeam={setCurrentTeam}
+                isEditing={isEditing}
+                players={players}
+                teams={teams}
+                handleEditClick={handleEditClick}
+                removePlayer={removePlayer}
+              />
+            ) : (
+              <FormSetupSolo
+                handleSubmit={handleSubmit}
+                currentPlayer={currentPlayer}
+                setCurrentPlayer={setCurrentPlayer}
+                isEditing={isEditing}
+                players={players}
+                handleEditClick={handleEditClick}
+                removePlayer={removePlayer}
+              />
+            )}
+          </>
+        ) : getCurrentGameMode() === "splito" ? (
           <FormSetupSolo
             handleSubmit={handleSubmit}
             currentPlayer={currentPlayer}
@@ -99,7 +134,7 @@ const ModalPlayerSetup = ({ show, setShow }) => {
             handleEditClick={handleEditClick}
             removePlayer={removePlayer}
           />
-        )}
+        ) : null}
       </Modal.Body>
 
       <Modal.Footer>

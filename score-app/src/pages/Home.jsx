@@ -7,7 +7,8 @@ import { usePlayers } from "../context/PlayerContext";
 import PlayerCard from "../components/playerCard/PlayerCard";
 
 const Home = () => {
-  const { players, teams, getPlayersByTeam, getTeamMode } = usePlayers();
+  const { players, teams, getPlayersByTeam, getTeamMode, getCurrentGameMode } =
+    usePlayers();
 
   return (
     <Container fluid className="d-flex flex-column p-3 container">
@@ -19,26 +20,34 @@ const Home = () => {
       <Row className="flex-grow-1">
         <div className="content">
           <Row>
-            {getTeamMode() ? (
+            {getCurrentGameMode() === "classique" ? (
               <>
-                {teams.map((team) => (
-                    <Col key={team.id} xs={6} md={6} lg={4}>
-                      <h2>{team.teamName}</h2>
-                      {getPlayersByTeam(team.id).map((player) => (
-                        <PlayerCard key={player.id} playerData={player} />
-                      ))}
-                    </Col>
-                ))}
+                {getTeamMode() ? (
+                  <>
+                    {teams.map((team) => (
+                      <Col key={team.id} xs={6} md={6} lg={4}>
+                        <h2>{team.teamName}</h2>
+                        {getPlayersByTeam(team.id).map((player) => (
+                          <PlayerCard key={player.id} playerData={player} />
+                        ))}
+                      </Col>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {players.map((player) => (
+                      <Col key={player.id} xs={6} md={6} lg={4}>
+                        <PlayerCard playerData={player} />
+                      </Col>
+                    ))}
+                  </>
+                )}
               </>
-            ) : (
+            ) : getCurrentGameMode() === "splito" ? (
               <>
-                {players.map((player) => (
-                  <Col key={player.id} xs={6} md={6} lg={4}>
-                    <PlayerCard playerData={player} />
-                  </Col>
-                ))}
+                <h2>A tester</h2>
               </>
-            )}
+            ) : null}
           </Row>
         </div>
       </Row>
