@@ -2,6 +2,8 @@ import { Button, Col, Modal, Row } from "react-bootstrap";
 import "./modalMoreScore.css";
 import { useState } from "react";
 
+const SCORE_OPTIONS = [1, 2, 5, 10, 100, 1000];
+
 const ModalMoreScore = ({
   showMoreScore,
   setShowMoreScore,
@@ -20,14 +22,6 @@ const ModalMoreScore = ({
     setIsEditingScore(false);
   };
 
-  const updateScoreLocal = async (value) => {
-    // console.log(`Update score by: ${value}`);
-    // Appeler ici la fonction de mise à jour du score si nécessaire
-    (await updateScore(value))
-      ? setTotalScorePlus(totalScorePlus + value)
-      : null;
-  };
-
   const handleScoreClick = () => {
     setIsEditingScore(true);
     setNewScore(playerScore);
@@ -40,29 +34,17 @@ const ModalMoreScore = ({
     }
   };
 
-  const handleScoreSubmit = async () => {
+  const handleScoreSubmit = () => {
     const scoreValue = parseInt(newScore) || 0;
     const difference = scoreValue - playerScore;
-    if (difference !== 0) {
-      await updateScore(difference);
-      setTotalScorePlus(totalScorePlus + difference);
-    }
+    if (difference !== 0) updateScore(difference);
     setIsEditingScore(false);
   };
 
-  const handleScoreBlur = () => {
-    handleScoreSubmit();
+  const handleScoreKeyDown = (e) => {
+    if (e.key === "Enter") handleScoreSubmit();
+    else if (e.key === "Escape") setIsEditingScore(false);
   };
-
-  const handleScoreKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleScoreSubmit();
-    } else if (e.key === "Escape") {
-      setIsEditingScore(false);
-    }
-  };
-
-  const scoreOptions = [1, 2, 5, 10, 100, 1000];
 
   return (
     <Modal
@@ -80,15 +62,15 @@ const ModalMoreScore = ({
       </Modal.Header>
       <Modal.Body className="text-center">
         <Row className="justify-content-between mb-2">
-          <Col xs="4" className="d-flex flex-column align-items-end"></Col>
+          <Col xs="4" />
           <Col xs="4" className="d-flex flex-column align-items-center">
             {isEditingScore ? (
               <input
                 type="text"
                 value={newScore}
                 onChange={handleScoreChange}
-                onBlur={handleScoreBlur}
-                onKeyDown={handleScoreKeyPress}
+                onBlur={handleScoreSubmit}
+                onKeyDown={handleScoreKeyDown}
                 autoFocus
                 style={{
                   fontSize: "2rem",
@@ -110,10 +92,7 @@ const ModalMoreScore = ({
             )}
             <p>Points</p>
           </Col>
-          <Col
-            xs="4"
-            className="d-flex flex-column align-items-start justify-content-centser"
-          >
+          <Col xs="4" className="d-flex flex-column align-items-start justify-content-center">
             {totalScorePlus > 0 ? (
               <h3 className="text-success">+{totalScorePlus}</h3>
             ) : totalScorePlus < 0 ? (
@@ -121,20 +100,14 @@ const ModalMoreScore = ({
             ) : null}
           </Col>
         </Row>
-        {scoreOptions.map((value) => (
-          <Row
-            className="justify-content-center mb-2 btn-moreScore"
-            key={value}
-          >
+
+        {SCORE_OPTIONS.map((value) => (
+          <Row className="justify-content-center mb-2 btn-moreScore" key={value}>
             <Col xs="6">
-              <Button variant="success" onClick={() => updateScoreLocal(value)}>
-                +{value}
-              </Button>
+              <Button variant="success" onClick={() => updateScore(value)}>+{value}</Button>
             </Col>
             <Col xs="6">
-              <Button variant="danger" onClick={() => updateScoreLocal(-value)}>
-                -{value}
-              </Button>
+              <Button variant="danger" onClick={() => updateScore(-value)}>-{value}</Button>
             </Col>
           </Row>
         ))}

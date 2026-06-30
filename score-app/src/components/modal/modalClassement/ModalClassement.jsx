@@ -1,30 +1,32 @@
 import { Button, Modal, Table, Form } from "react-bootstrap";
 import { usePlayers } from "../../../context/PlayerContext";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 const ModalClassement = ({ show, setShow }) => {
-  const { getPlayers, getTeamMode } = usePlayers();
-  const [teamMode, setTeamMode] = useState(false); // État pour afficher par équipe ou solo
+  const { players, teams, isTeamMode } = usePlayers();
+  const [showByTeam, setShowByTeam] = useState(false);
 
-  const players = getPlayers();
+  const { sortedPlayers, rankedTeams } = useMemo(() => {
+    const grouped = {};
+    players.forEach((player) => {
+      if (!grouped[player.team]) {
+        grouped[player.team] = { members: [], totalScore: 0 };
+      }
+      grouped[player.team].members.push(player);
+      grouped[player.team].totalScore += player.score;
+    });
 
-  // Regrouper les joueurs par équipe et calculer le score total
-  const teams = {};
-  players.forEach((player) => {
-    if (!teams[player.team]) {
-      teams[player.team] = { members: [], totalScore: 0 };
-    }
-    teams[player.team].members.push(player);
-    teams[player.team].totalScore += player.score;
-  });
+    const rankedTeams = Object.entries(grouped)
+      .map(([teamId, data]) => {
+        const teamInfo = teams.find((t) => t.id === teamId);
+        return { teamId, teamName: teamInfo?.teamName ?? teamId, ...data };
+      })
+      .sort((a, b) => b.totalScore - a.totalScore);
 
-  // Trier les équipes par score total
-  const sortedTeams = Object.entries(teams)
-    .map(([team, data]) => ({ team, ...data }))
-    .sort((a, b) => b.totalScore - a.totalScore);
+    const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
 
-  // Trier les joueurs par score individuel
-  const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+    return { sortedPlayers, rankedTeams };
+  }, [players, teams]);
 
   return (
     <Modal show={show} onHide={() => setShow(false)}>
@@ -33,62 +35,56 @@ const ModalClassement = ({ show, setShow }) => {
       </Modal.Header>
       <Modal.Body>
         {players.length === 0 ? (
-          <p>Aucun joueur n'a été ajouté</p>
+          <p>Aucun joueur n&apos;a été ajouté</p>
         ) : (
           <>
-            {/* Switch entre classement solo et par équipe */}
             <Form.Check
               type="switch"
               id="switch-mode"
               label="Classement par équipe"
-              checked={getTeamMode() && teamMode}
-              onChange={() => setTeamMode(!teamMode)}
-              disabled={!getTeamMode()}
+              checked={isTeamMode && showByTeam}
+              onChange={() => setShowByTeam(!showByTeam)}
+              disabled={!isTeamMode}
             />
 
-            {/* Tableau des scores Solo */}
-            {teamMode && getTeamMode()? (
-              <>
-                {sortedTeams.map((team, index) => (
-                  <Table striped bordered hover key={team.team}>
-                    <thead>
-                      <tr>
-                        <th>Équipe {team.team[1]} </th>
-                        <th>Score {team.totalScore}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {team.members.map((player) => (
-                        <tr key={player.id}>
-                          <td>{player.name}</td>
-                          <td>{player.score}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                ))}
-              </>
-            ) : (
-              <>
-                <Table striped bordered hover>
+            {showByTeam && isTeamMode ? (
+              rankedTeams.map((team) => (
+                <Table striped bordered hover key={team.teamId}>
                   <thead>
                     <tr>
-                      <th>#</th>
-                      <th>Joueur</th>
-                      <th>Score</th>
+                      <th>{team.teamName}</th>
+                      <th>Score total : {team.totalScore}</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {sortedPlayers.map((player, index) => (
+                    {team.members.map((player) => (
                       <tr key={player.id}>
-                        <td>{index + 1}</td>
                         <td>{player.name}</td>
                         <td>{player.score}</td>
                       </tr>
                     ))}
                   </tbody>
                 </Table>
-              </>
+              ))
+            ) : (
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Joueur</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedPlayers.map((player, index) => (
+                    <tr key={player.id}>
+                      <td>{index + 1}</td>
+                      <td>{player.name}</td>
+                      <td>{player.score}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
             )}
           </>
         )}

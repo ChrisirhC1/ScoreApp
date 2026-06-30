@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Modal, Button, Form, ListGroup } from "react-bootstrap";
+import { useState } from "react";
+import { Modal, Button, Form } from "react-bootstrap";
 import { usePlayers } from "../../../context/PlayerContext";
 import FormSetupSolo from "./FormSetupSolo";
 import FormSetupEquipe from "./FormSetupEquipe";
@@ -7,53 +7,27 @@ import FormSetupEquipe from "./FormSetupEquipe";
 const ModalPlayerSetup = ({ show, setShow }) => {
   const [currentPlayer, setCurrentPlayer] = useState("");
   const [currentTeam, setCurrentTeam] = useState("t1");
-  const [isEditing, setIsEditing] = useState(null); // Gestion de l'édition
-  const [isTeamMode, setIsTeamMode] = useState(false); // Gestion du mode équipe
-  const {
-    players,
-    teams,
-    addPlayer,
-    editPlayer,
-    removePlayer,
-    teamMode,
-    getTeamMode,
-    movePlayer,
-  } = usePlayers();
+  const [isEditing, setIsEditing] = useState(null);
 
-  useEffect(() => {
-    setIsTeamMode(getTeamMode());
-  }, [getTeamMode]);
+  const { players, teams, isTeamMode, addPlayer, editPlayer, removePlayer, teamMode } = usePlayers();
 
-  // Ajout ou modification d'un joueur
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isEditing !== null) {
-      editPlayer(isEditing, currentPlayer, currentTeam); // Modifier un joueur existant
-      setIsEditing(null); // Réinitialiser le mode édition
-      setCurrentTeam("");
-      console.log(
-        "je veux éditer le joueur",
-        isEditing,
-        "avec le nom",
-        currentPlayer
-      );
+      editPlayer(isEditing, currentPlayer, currentTeam);
+      setIsEditing(null);
+      setCurrentTeam("t1");
     } else {
-      addPlayer(currentPlayer, currentTeam); // Ajouter un nouveau joueur
+      addPlayer(currentPlayer, currentTeam);
     }
     setCurrentPlayer("");
   };
 
-  // Passer en mode édition
   const handleEditClick = (id) => {
-    const player = players.find((player) => player.id === id);
+    const player = players.find((p) => p.id === id);
     setCurrentPlayer(player.name);
     setCurrentTeam(player.team);
     setIsEditing(id);
-  };
-
-  const handleTeamMode = (e) => {
-    setIsTeamMode(e.target.checked);
-    teamMode(e.target.checked);
   };
 
   return (
@@ -62,16 +36,14 @@ const ModalPlayerSetup = ({ show, setShow }) => {
         <Modal.Title>Configuration des joueurs</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {/* Modes */}
         <div className="mb-3">
-          {/* btn switch "mode Equipe" */}
           <Form>
             <Form.Check
               type="switch"
               id="equipe-switch"
               label="Mode Equipe"
               checked={isTeamMode}
-              onChange={(e) => handleTeamMode(e)}
+              onChange={(e) => teamMode(e.target.checked)}
             />
           </Form>
         </div>
