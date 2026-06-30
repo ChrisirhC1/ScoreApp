@@ -4,11 +4,14 @@ import './index.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App.jsx'
 import { PlayerProvider } from './context/PlayerContext.jsx';
+import { ThemeProvider } from './context/ThemeContext.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <PlayerProvider>
-      <App />
-    </PlayerProvider>
+    <ThemeProvider>
+      <PlayerProvider>
+        <App />
+      </PlayerProvider>
+    </ThemeProvider>
   </StrictMode>,
 )

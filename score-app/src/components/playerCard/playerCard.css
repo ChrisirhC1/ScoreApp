@@ -1,4 +1,58 @@
+.player-card .card {
+  background-color: var(--c-surface-2);
+  border: 1px solid var(--c-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px var(--c-shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.3s ease;
+  overflow: hidden;
+}
+
+.player-card .card:hover {
+  transform: translateY(-3px);
+  border-color: var(--c-accent);
+  box-shadow: 0 8px 30px var(--c-glow);
+}
+
+.player-card .card-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--c-accent);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.player-card .card-title:hover {
+  opacity: 0.75;
+}
+
+.player-card .score-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--c-text);
+  line-height: 1;
+}
+
+.player-card .score-label {
+  font-size: 0.7rem;
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+
+.player-card .score-delta {
+  font-size: 0.85rem;
+  font-weight: 700;
+  min-width: 36px;
+}
+
 .player-card button {
-    width: 100%;
-    
+  width: 100%;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 6px 0;
 }

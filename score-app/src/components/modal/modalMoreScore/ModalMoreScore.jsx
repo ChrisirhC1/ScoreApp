@@ -61,9 +61,8 @@ const ModalMoreScore = ({
         <Modal.Title>{playerName}</Modal.Title>
       </Modal.Header>
       <Modal.Body className="text-center">
-        <Row className="justify-content-between mb-2">
-          <Col xs="4" />
-          <Col xs="4" className="d-flex flex-column align-items-center">
+        <div className="d-flex justify-content-center align-items-center gap-3 mb-4">
+          <div className="d-flex flex-column align-items-center">
             {isEditingScore ? (
               <input
                 type="text"
@@ -73,33 +72,44 @@ const ModalMoreScore = ({
                 onKeyDown={handleScoreKeyDown}
                 autoFocus
                 style={{
-                  fontSize: "2rem",
+                  fontSize: "2.5rem",
+                  fontWeight: 800,
                   textAlign: "center",
-                  width: "120px",
-                  border: "2px solid #0d6efd",
-                  borderRadius: "5px",
-                  padding: "5px",
+                  width: "140px",
+                  background: "rgba(124, 58, 237, 0.1)",
+                  border: "2px solid #7c3aed",
+                  borderRadius: "12px",
+                  padding: "6px 10px",
+                  color: "var(--c-text)",
+                  outline: "none",
                 }}
               />
             ) : (
-              <h1
+              <span
                 onClick={handleScoreClick}
-                style={{ cursor: "pointer", userSelect: "none" }}
                 title="Cliquer pour modifier"
+                style={{
+                  fontSize: "3rem",
+                  fontWeight: 800,
+                  color: "var(--c-text)",
+                  cursor: "pointer",
+                  userSelect: "none",
+                  lineHeight: 1,
+                }}
               >
                 {playerScore}
-              </h1>
+              </span>
             )}
-            <p>Points</p>
-          </Col>
-          <Col xs="4" className="d-flex flex-column align-items-start justify-content-center">
-            {totalScorePlus > 0 ? (
-              <h3 className="text-success">+{totalScorePlus}</h3>
-            ) : totalScorePlus < 0 ? (
-              <h3 className="text-danger">{totalScorePlus}</h3>
-            ) : null}
-          </Col>
-        </Row>
+            <span style={{ fontSize: "0.7rem", color: "var(--c-text-muted)", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 4 }}>
+              points
+            </span>
+          </div>
+          {totalScorePlus !== 0 && (
+            <span style={{ fontSize: "1.3rem", fontWeight: 700 }} className={totalScorePlus > 0 ? "text-success" : "text-danger"}>
+              {totalScorePlus > 0 ? `+${totalScorePlus}` : totalScorePlus}
+            </span>
+          )}
+        </div>
 
         {SCORE_OPTIONS.map((value) => (
           <Row className="justify-content-center mb-2 btn-moreScore" key={value}>
