@@ -1,4 +1,3 @@
-// context/PlayerContext.js
 import { createContext, useContext, useState, useEffect } from "react";
 
 const PlayerContext = createContext();
@@ -11,229 +10,179 @@ export const PlayerProvider = ({ children }) => {
 
   useEffect(() => {
     const storedPlayers = localStorage.getItem("players");
-    if (storedPlayers) {
-      setPlayers(JSON.parse(storedPlayers));
-    }
+    if (storedPlayers) setPlayers(JSON.parse(storedPlayers));
+
     const storedTeams = localStorage.getItem("teams");
-    if (storedTeams) {
-      setTeams(JSON.parse(storedTeams));
-      setIsTeamMode(true);
-    }
+    if (storedTeams) setTeams(JSON.parse(storedTeams));
+
+    const storedIsTeamMode = localStorage.getItem("isTeamMode");
+    if (storedIsTeamMode !== null) setIsTeamMode(JSON.parse(storedIsTeamMode));
+
+    const storedIsNegativeScore = localStorage.getItem("isNegativeScore");
+    if (storedIsNegativeScore !== null) setIsNegativeScore(JSON.parse(storedIsNegativeScore));
   }, []);
 
-  /*############################################################
-  ######################### UTILITAIRES ########################
-  ############################################################*/
+  /*########## UTILITAIRES ##########*/
 
-  const capitalizeFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+  const capitalizeFirstLetter = (string) =>
+    string.charAt(0).toUpperCase() + string.slice(1);
+
+  const getNewId = (list, prefix) => {
+    let n = list.length + 1;
+    while (list.find((item) => item.id === `${prefix}${n}`)) n++;
+    return `${prefix}${n}`;
   };
 
-  const getNewIdPlayer = () => {
-    let newId = `p${players.length + 1}`;
-    while (players.find((player) => player.id === newId)) {
-      newId = `p${parseInt(newId.slice(1)) + 1}`;
-    }
-    return newId;
-  };
-
-  const getNewIdTeam = () => {
-    let newId = `t${teams.length + 1}`;
-    while (teams.find((team) => team.id === newId)) {
-      newId = `t${parseInt(newId.slice(1)) + 1}`;
-    }
-    return newId;
-  };
-
-  const savePlayers = (players) => {
-    if (!players || players.length === 0) {
+  const savePlayers = (updated) => {
+    if (!updated || updated.length === 0) {
       localStorage.removeItem("players");
       setPlayers([]);
     } else {
-      localStorage.setItem("players", JSON.stringify(players));
-      setPlayers(players);
+      localStorage.setItem("players", JSON.stringify(updated));
+      setPlayers(updated);
     }
   };
 
-  const saveTeams = (teams) => {
-    if (!teams || teams.length === 0) {
+  const saveTeams = (updated) => {
+    if (!updated || updated.length === 0) {
       localStorage.removeItem("teams");
       setTeams([]);
     } else {
-      localStorage.setItem("teams", JSON.stringify(teams));
-      setTeams(teams);
+      localStorage.setItem("teams", JSON.stringify(updated));
+      setTeams(updated);
     }
   };
 
-  /*############################################################
-  ######################### SCORES #############################
-  ############################################################*/
+  /*########## SCORES ##########*/
 
   const allowNegativeScores = (bool) => {
     setIsNegativeScore(bool);
+    localStorage.setItem("isNegativeScore", JSON.stringify(bool));
   };
 
-  const getAllowNegativeScores = () => {
-    return isNegativeScore;
+  /*########## PLAYERS ##########*/
+
+  const addPlayer = (playerName, teamId) => {
+    if (!playerName.trim()) return;
+    const newPlayer = {
+      id: getNewId(players, "p"),
+      name: capitalizeFirstLetter(playerName),
+      score: 0,
+      ...(isTeamMode && { team: teamId }),
+    };
+    savePlayers([...players, newPlayer]);
   };
 
-  /*############################################################
-  ######################### PLAYERS ############################
-  ############################################################*/
-
-  const addPlayer =  (playerName, teamId) => {
-    if (playerName.trim()) {
-      playerName = capitalizeFirstLetter(playerName);
-      const newId = getNewIdPlayer();
-      const newPlayer = { id: newId, name: playerName, score: 0 };
-      if (isTeamMode) {
-        
-        newPlayer.team = teamId;
-
-        
-      }
-      const updatedPlayers = [...players, newPlayer];
-      setPlayers(updatedPlayers);
-      savePlayers(updatedPlayers);
-    }
-  };
-
-  const editPlayer =  (id, newName, newTeam) => {
-    if (newName.trim()) {
-      newName = capitalizeFirstLetter(newName);
-      const updatedPlayers = players.map((player) =>
-        player.id === id ? { ...player, name: newName } : player
-      );
-      if (newTeam !== undefined) {
-         movePlayer(id, newTeam);
-      }
-      setPlayers(updatedPlayers);
-      savePlayers(updatedPlayers);
-    }
-  };
-
-  const getPlayers = () => players;
-
-  const getPlayersByTeam = (team) =>
-    players.filter((player) => player.team === team);
-
-  const getPlayersInfos = (id) => players.find((player) => player.id === id);
-
-  const removePlayer = (id) => {
-    const updatedPlayers = players.filter((player) => player.id !== id);
-    setPlayers(updatedPlayers);
-    savePlayers(updatedPlayers);
-  };
-
-  const addPoints = (id, points) => {
+  const editPlayer = (id, newName, newTeam) => {
+    if (!newName.trim()) return;
     const updatedPlayers = players.map((player) =>
-      player.id === id ? { ...player, score: player.score + points } : player
+      player.id === id
+        ? {
+            ...player,
+            name: capitalizeFirstLetter(newName),
+            ...(newTeam !== undefined && { team: newTeam }),
+          }
+        : player
     );
-    setPlayers(updatedPlayers);
     savePlayers(updatedPlayers);
   };
 
-  const removePoints = (id, points) => {
-    const updatedPlayers = players.map((player) =>
-      player.id === id ? { ...player, score: player.score - points } : player
+  const removePlayer = (id) =>
+    savePlayers(players.filter((player) => player.id !== id));
+
+  const getPlayersByTeam = (teamId) =>
+    players.filter((player) => player.team === teamId);
+
+  const addPoints = (id, points) =>
+    savePlayers(
+      players.map((player) =>
+        player.id === id ? { ...player, score: player.score + points } : player
+      )
     );
-    setPlayers(updatedPlayers);
-    savePlayers(updatedPlayers);
-  };
 
-  const resetScores = () => {
-    const updatedPlayers = players.map((player) => ({ ...player, score: 0 }));
-    setPlayers(updatedPlayers);
-    savePlayers(updatedPlayers);
-  };
+  const removePoints = (id, points) =>
+    savePlayers(
+      players.map((player) =>
+        player.id === id ? { ...player, score: player.score - points } : player
+      )
+    );
 
-  /*############################################################
-  ########################### TEAMS ############################
-  ############################################################*/
+  const resetScores = () =>
+    savePlayers(players.map((player) => ({ ...player, score: 0 })));
+
+  /*########## TEAMS ##########*/
 
   const addTeam = () => {
-    const newId = getNewIdTeam();
-    const newTeam = { id: newId, teamName: `Équipe ${newId[1]}` };
-    const updatedTeams = [...teams, newTeam];
-    setTeams(updatedTeams);
-    saveTeams(updatedTeams);
-    console.log("ajout d'une équipe", updatedTeams);
+    const newId = getNewId(teams, "t");
+    saveTeams([...teams, { id: newId, teamName: `Équipe ${newId.slice(1)}` }]);
   };
 
   const removeTeam = (id) => {
     const updatedTeams = teams.filter((team) => team.id !== id);
-    setTeams(updatedTeams);
-    saveTeams(updatedTeams);
-
     const newTeamId = updatedTeams.length > 0 ? updatedTeams[0].id : null;
-    const updatedPlayers = players.map((player) =>
-      player.team === id ? { ...player, team: newTeamId } : player
+
+    saveTeams(updatedTeams);
+    savePlayers(
+      players.map((player) =>
+        player.team === id ? { ...player, team: newTeamId } : player
+      )
     );
 
     if (updatedTeams.length === 0) {
-      
       setIsTeamMode(false);
+      localStorage.setItem("isTeamMode", JSON.stringify(false));
     }
-    setPlayers(updatedPlayers);
-    savePlayers(updatedPlayers);
   };
 
-  const movePlayer = (id, team) => {
-    const updatedPlayers = players.map((player) =>
-      player.id === id ? { ...player, team } : player
+  const movePlayer = (id, teamId) =>
+    savePlayers(
+      players.map((player) =>
+        player.id === id ? { ...player, team: teamId } : player
+      )
     );
-    setPlayers(updatedPlayers);
-    savePlayers(updatedPlayers);
-    // console.log("je dèplace le joueur", id, "dans l'équipe", team);
-  };
 
   const teamMode = (bool) => {
+    setIsTeamMode(bool);
+    localStorage.setItem("isTeamMode", JSON.stringify(bool));
+
     if (bool) {
-      setIsTeamMode(true);
-      if (teams.length === 0) {
-        const initialTeams = [
-          { id: "t1", teamName: "Équipe 1" },
-          { id: "t2", teamName: "Équipe 2" },
-        ];
-        setTeams(initialTeams);
-        saveTeams(initialTeams);
-      }
-      const updatedPlayers = players.map((player, index) => ({
-        ...player,
-        team: `t${(index % 2) + 1}`,
-      }));
-      setPlayers(updatedPlayers);
-      savePlayers(updatedPlayers);
+      const currentTeams =
+        teams.length === 0
+          ? [
+              { id: "t1", teamName: "Équipe 1" },
+              { id: "t2", teamName: "Équipe 2" },
+            ]
+          : teams;
+      if (teams.length === 0) saveTeams(currentTeams);
+      savePlayers(
+        players.map((player, index) => ({
+          ...player,
+          team: `t${(index % currentTeams.length) + 1}`,
+        }))
+      );
     } else {
-      setIsTeamMode(false);
-      setTeams([]);
       saveTeams([]);
-      const updatedPlayers = players.map(({ team, ...player }) => player);
-      setPlayers(updatedPlayers);
-      savePlayers(updatedPlayers);
+      savePlayers(players.map(({ team, ...player }) => player));
     }
   };
 
-  const getTeamMode = () => isTeamMode;
-
   const shuffleEquipes = () => {
-    // mélanger les joueurs dans les équipes existantes
-    const shuffledPlayers = players.sort(() => Math.random() - 0.5);
-    const updatedPlayers = shuffledPlayers.map((player, index) => ({
-      ...player,
-      team: `t${(index % teams.length) + 1}`,
-    }));
-    setPlayers(updatedPlayers);
-    savePlayers(updatedPlayers);
+    const shuffled = [...players].sort(() => Math.random() - 0.5);
+    savePlayers(
+      shuffled.map((player, index) => ({
+        ...player,
+        team: `t${(index % teams.length) + 1}`,
+      }))
+    );
   };
 
-  /*###########################################################
-  ########################### RESET ###########################
-  ############################################################*/
+  /*########## RESET ##########*/
 
   const clearPlayers = () => {
     savePlayers([]);
     saveTeams([]);
+    setIsTeamMode(false);
+    localStorage.removeItem("isTeamMode");
   };
 
   return (
@@ -241,11 +190,11 @@ export const PlayerProvider = ({ children }) => {
       value={{
         players,
         teams,
+        isTeamMode,
+        isNegativeScore,
         allowNegativeScores,
-        getAllowNegativeScores,
         addPlayer,
         editPlayer,
-        getPlayers,
         removePlayer,
         addPoints,
         removePoints,
@@ -253,7 +202,6 @@ export const PlayerProvider = ({ children }) => {
         resetScores,
         clearPlayers,
         teamMode,
-        getTeamMode,
         getPlayersByTeam,
         addTeam,
         removeTeam,

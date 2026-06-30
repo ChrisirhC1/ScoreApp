@@ -1,80 +1,66 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Modal, Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
-// import usePlayers from '../../../hooks/usePlayers';
-
 import { usePlayers } from '../../../context/PlayerContext';
 
+const STEP_CONFIRM = 1;
+const STEP_KEEP_PLAYERS = 2;
+
 const ModalConfirmReset = ({ show, setShow }) => {
+  const { resetScores, clearPlayers } = usePlayers();
+  const [step, setStep] = useState(STEP_CONFIRM);
 
-    const { resetScores, clearPlayers } = usePlayers();
-    const [NoMessage, setNoMessage] = useState(1);
-    const [resetScoresMessage] = useState({
-        title: 'Réinitialisation',
-        message: 'Voulez-vous vraiment réinitialiser la partie ?'
-    });
-    const [deletePlayerMessage] = useState({
-        title: 'Même joueurs ?',
-        message: 'Voulez-vous garder les mêmes joueurs ?'
-    });
+  const handleClose = () => {
+    setStep(STEP_CONFIRM);
+    setShow(false);
+  };
 
-    const handleConfirm = () => {
-        setNoMessage(2);
-    };
+  return (
+    <Modal show={show} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Réinitialisation</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        Voulez-vous vraiment réinitialiser la partie ?
+      </Modal.Body>
+      <Modal.Footer>
+        {step === STEP_CONFIRM && (
+          <Button variant="secondary" onClick={handleClose}>
+            Annuler
+          </Button>
+        )}
+        <Button variant="danger" onClick={() => setStep(STEP_KEEP_PLAYERS)}>
+          Confirmer
+        </Button>
+      </Modal.Footer>
 
-
-    const handleClose = () => {
-        setNoMessage(1);
-        setShow(!show);
-    };
-
-    return (
-        <Modal show={show} onHide={() => handleClose()}>
-            <Modal.Header closeButton>
-                <Modal.Title>{resetScoresMessage.title}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                {resetScoresMessage.message}
-            </Modal.Body>
-            <Modal.Footer>
-
-                <Button variant="secondary" onClick={() => handleClose()} hidden={NoMessage === 2}>
-                    Annuler
-                </Button>
-                <Button variant="danger" onClick={handleConfirm}>
-                    Confirmer
-                </Button>
-            </Modal.Footer>
-
-
-            {NoMessage === 2 && (
-                <>
-                    <Modal.Header >
-                        <Modal.Title>{deletePlayerMessage.title}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {deletePlayerMessage.message}
-                    </Modal.Body>
-                    <Modal.Footer>
-
-                        <Button variant="danger" onClick={() => { handleClose(), clearPlayers() }} >
-                            <OverlayTrigger
-                                placement="top"  
-                                overlay={<Tooltip id="tooltip-non">{"(Libère la mémoire)"}</Tooltip>}
-                            >
-                                <span>Non</span>
-                            </OverlayTrigger>
-                        </Button>
-
-                        <Button variant="success" onClick={() => { handleClose(), resetScores() }}>
-                            Oui
-                        </Button>
-                    </Modal.Footer>
-                </>
-            )}
-
-
-        </Modal>
-    );
-}
+      {step === STEP_KEEP_PLAYERS && (
+        <>
+          <Modal.Header>
+            <Modal.Title>Même joueurs ?</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Voulez-vous garder les mêmes joueurs ?
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="danger"
+              onClick={() => { handleClose(); clearPlayers(); }}
+            >
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip id="tooltip-non">Libère la mémoire</Tooltip>}
+              >
+                <span>Non</span>
+              </OverlayTrigger>
+            </Button>
+            <Button variant="success" onClick={() => { handleClose(); resetScores(); }}>
+              Oui
+            </Button>
+          </Modal.Footer>
+        </>
+      )}
+    </Modal>
+  );
+};
 
 export default ModalConfirmReset;

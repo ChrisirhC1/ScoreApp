@@ -48,7 +48,7 @@ const FormSetupEquipe = ({
         <Button
           type="submit"
           variant="primary"
-          disabled={currentPlayer.trim() === "" && currentTeam === "" }
+          disabled={!currentPlayer.trim()}
         >
           {isEditing !== null ? "Modifier" : "Ajouter"}
         </Button>
@@ -95,34 +95,28 @@ const FormSetupEquipe = ({
                   >
                     {player.name}
                   </div>
-                  <div>
-                    <Button
-                      variant="none"
-                      size="sm"
-                      onClick={() => removePlayer(player.id)}
-                      disabled={isEditing !== null}
-                    >
-                      ❌
-                    </Button>
-                  </div>
+                  <Button
+                    variant="none"
+                    size="sm"
+                    onClick={() => removePlayer(player.id)}
+                    disabled={isEditing !== null}
+                  >
+                    ❌
+                  </Button>
                 </ListGroup.Item>
               ))}
             </ListGroup>
           </Col>
         ))}
         <Col xs={12} className="mt-3">
-          <Button
-            variant="dark"
-            onClick={() => addTeam()}
-            style={{ width: "100%" }}
-          >
+          <Button variant="dark" onClick={addTeam} style={{ width: "100%" }}>
             Ajouter une équipe
           </Button>
         </Col>
         <Col xs={12} className="mt-3">
           <Button
             variant="success"
-            onClick={() => shuffleEquipes()}
+            onClick={shuffleEquipes}
             style={{ width: "100%" }}
             disabled={players.length <= 1}
           >
