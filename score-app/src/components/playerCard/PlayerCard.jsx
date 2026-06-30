@@ -32,35 +32,33 @@ const PlayerCard = ({ playerData }) => {
 
   return (
     <>
-      <div className="player-card mb-4">
-        <Card className="text-center">
-          <Card.Body className="d-flex flex-column">
-            <Card.Title onClick={() => setShowMoreScore(true)} style={{ cursor: 'pointer' }}>
+      <div className="player-card mb-3">
+        <Card>
+          <Card.Body className="d-flex flex-column gap-2 p-3">
+            <Card.Title onClick={() => setShowMoreScore(true)}>
               {playerName}
             </Card.Title>
-            <div className='mb-2'>
-              <Row>
-                <Col xs={3} />
-                <Col xs={6}>
-                  <strong style={{ fontSize: "1.5em" }}>{playerScore}</strong> Points
-                </Col>
-                <Col xs={3} className='d-flex justify-content-start align-items-center'>
-                  {showTotalScorePlus && (
-                    totalScorePlus > 0 ? (
-                      <div className="text-success"><strong>+{totalScorePlus}</strong></div>
-                    ) : totalScorePlus < 0 ? (
-                      <div className="text-danger"><strong>{totalScorePlus}</strong></div>
-                    ) : null
-                  )}
-                </Col>
-              </Row>
-            </div>
-            <Row>
+
+            <Row className="align-items-center mb-1">
+              <Col xs={9} className="d-flex flex-column align-items-center">
+                <span className="score-value">{playerScore}</span>
+                <span className="score-label">points</span>
+              </Col>
+              <Col xs={3} className="d-flex align-items-center">
+                {showTotalScorePlus && (
+                  <span className={`score-delta ${totalScorePlus > 0 ? 'text-success' : 'text-danger'}`}>
+                    {totalScorePlus > 0 ? `+${totalScorePlus}` : totalScorePlus}
+                  </span>
+                )}
+              </Col>
+            </Row>
+
+            <Row className="g-2">
               <Col xs={6}>
                 <Button variant="success" onClick={() => updateScore(1)}>+</Button>
               </Col>
               <Col xs={6}>
-                <Button variant="danger" onClick={() => updateScore(-1)}>-</Button>
+                <Button variant="danger" onClick={() => updateScore(-1)}>−</Button>
               </Col>
             </Row>
           </Card.Body>
